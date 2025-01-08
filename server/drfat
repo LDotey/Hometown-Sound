@@ -78,7 +78,7 @@ class Artist(db.Model, SerializerMixin):
     genre = db.relationship('Genre', back_populates='artists')
     # albums = db.relationship('Album', back_populates='artists')
 
-    serialize_rules = ('-user.artists', 'city.artists', 'genre.artists')
+    serialize_rules = ('-user.artists', '-city.artists', '-genre.artists')
 
     def __repr__(self):
         return f'<Artist {self.id}, User: {self.user_id}, City: {self.city_id}, Genre: {self.genre_id}'
