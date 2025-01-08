@@ -19,6 +19,7 @@ class User(db.Model, SerializerMixin):
 
 class City(db.Model, SerializerMixin):
     __tablename__ = "cities"
+    serialize_rules = ('-artists',)
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
@@ -33,6 +34,7 @@ class City(db.Model, SerializerMixin):
 
 class Genre(db.Model, SerializerMixin):
     __tablename__ = "genres"
+    serialize_rules = ('-artists',)
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
@@ -40,6 +42,7 @@ class Genre(db.Model, SerializerMixin):
 
     artists = db.relationship('Artist', back_populates='genre')
 
+    
 
     def __repr__(self):
         return f'<Genre {self.id}, {self.name}, {self.color}>'

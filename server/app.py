@@ -8,9 +8,11 @@ from flask_restful import Resource
 
 # Local imports
 from config import app, db, api
+from flask_cors import CORS
+ 
 # Add your model imports
 from models import User, City, Genre, Artist
-from flask_cors import CORS
+
 
 CORS(app)
 
