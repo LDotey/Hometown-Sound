@@ -10,9 +10,26 @@ class User(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, nullable=False, unique=True)
+    # _password_hash = db.Column(db.String, nullable=False)
 
     artists = db.relationship('Artist', back_populates='user')
 
+    # Flask-Login required properties:
+    # def get_id(self):
+    #     return str(self.id)
+    
+    # @property
+    # def is_authenticated(self):
+    #     return True
+    
+    # @property
+    # def is_active(self):
+    #     return True
+    
+    # @property
+    # def is_anonymous(self):
+    #     return False
+    
 
     def __repr__(self):
         return f'<User {self.id}, {self.username}>'
@@ -26,6 +43,7 @@ class City(db.Model, SerializerMixin):
 
     artists = db.relationship('Artist', back_populates='city')
 
+    serialize_rules = ('-artists.city')
 
     def __repr__(self):
         return f'<City {self.id}, {self.name}, {self.location}>'
@@ -39,7 +57,6 @@ class Genre(db.Model, SerializerMixin):
     color = db.Column(db.String)
 
     artists = db.relationship('Artist', back_populates='genre')
-
 
     def __repr__(self):
         return f'<Genre {self.id}, {self.name}, {self.color}>'
@@ -59,7 +76,19 @@ class Artist(db.Model, SerializerMixin):
     user = db.relationship('User', back_populates='artists')
     city = db.relationship('City', back_populates='artists')
     genre = db.relationship('Genre', back_populates='artists')
+    # albums = db.relationship('Album', back_populates='artists')
+
+    serialize_rules = ('-user.artists', 'city.artists', 'genre.artists')
 
     def __repr__(self):
         return f'<Artist {self.id}, User: {self.user_id}, City: {self.city_id}, Genre: {self.genre_id}'
     
+# class Album(db.Model, SerializerMixin):
+#     __tablename__ = "albums"
+
+#     id = db.Column(db.Integer, primary_key=True)
+#     title = db.Column(db.String, nullable=False)
+#     release_year = db.Column(db.Integer)
+#     artist_id = db.Column(db.Integer, db.ForeignKey('artis.id'), nullable=False)
+
+#     artist = db.relationship('Artist', back_populates='albums')
