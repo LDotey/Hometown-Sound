@@ -1,7 +1,8 @@
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.associationproxy import association_proxy
+# from flask_login import lo
 
-from config import db
+from config import db, bcrypt, login_manager
 
 # Models go here!
 
@@ -10,8 +11,39 @@ class User(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, nullable=False, unique=True)
+    _password_hash = db.Column(db.String, nullable=False)
 
     artists = db.relationship('Artist', back_populates='user')
+
+    def set_password(self, password):
+        self._password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+
+    def check_password(self, password):
+        return bcrypt.check_password_hash(self._password_hash, password)
+
+    # Flask-Login required properties:
+    def get_id(self):
+        return str(self.id)
+    
+    @property
+    def is_authenticated(self):
+        return True
+    
+    @property
+    def is_active(self):
+        return True
+    
+    @property
+    def is_anonymous(self):
+        return False
+     
+      # Flask-Login User Loader
+    @login_manager.user_loader
+    def load_user(user_id):
+        
+        return db.session.get(User, int(user_id))   
+
+    
 
 
     def __repr__(self):
