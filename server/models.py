@@ -1,12 +1,12 @@
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.associationproxy import association_proxy
-# from flask_login import lo
+from flask_login import UserMixin
 
 from config import db, bcrypt, login_manager
 
 # Models go here!
 
-class User(db.Model, SerializerMixin):
+class User(db.Model, UserMixin, SerializerMixin):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -25,9 +25,9 @@ class User(db.Model, SerializerMixin):
     def get_id(self):
         return str(self.id)
     
-    @property
-    def is_authenticated(self):
-        return True
+    # @property
+    # def is_authenticated(self):
+    #     return True
     
     @property
     def is_active(self):

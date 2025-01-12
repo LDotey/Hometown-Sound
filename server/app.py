@@ -78,7 +78,7 @@ class Logout(Resource):
 class CurrentUser(Resource):
     @login_required
     def get(self):
-        breakpoint()
+        print(current_user)
         if current_user.is_authenticated:
             user_dict = current_user.to_dict()
 
