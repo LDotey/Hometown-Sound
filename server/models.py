@@ -25,9 +25,9 @@ class User(db.Model, UserMixin, SerializerMixin):
     def get_id(self):
         return str(self.id)
     
-    # @property
-    # def is_authenticated(self):
-    #     return True
+    @property
+    def is_authenticated(self):
+        return True
     
     @property
     def is_active(self):

@@ -63,6 +63,8 @@ class Login(Resource):
         # login_user() sets the ID in the session and marks them as authenticated
         if user and user.check_password(password):
             login_user(user, remember=True)
+            
+            print(current_user) # check if current user is set correctly
 
             return user.to_dict(rules=('-_password_hash',)), 201
         
