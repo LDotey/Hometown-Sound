@@ -1,7 +1,36 @@
-:root {
+/* :root {
   --bg: #282c34;
   --header: #fff;
   --link: #61dafb;
   --text: hsla(0, 0%, 100%, 0.88);
+} */
+
+/* NavBar styling */
+.navbar {
+  display: flex;
+  justify-content: space-around; /* Distribute links evenly across the top */
+  align-items: center;
+  background-color: #333; /* Background color for the navbar */
+  padding: 10px 0; /* Add some padding */
 }
 
+.navbar p {
+  margin: 0; /* Remove margin from <p> tags to align them properly */
+}
+
+.navbar a {
+  color: #fff; /* White text color */
+  text-decoration: none; /* Remove underline from links */
+  padding: 10px 20px; /* Add padding to make the links look like buttons */
+  border-radius: 5px; /* Rounded corners for buttons */
+  background-color: #555; /* Button background color */
+  transition: background-color 0.3s ease; /* Smooth transition effect on hover */
+}
+
+.navbar a:hover {
+  background-color: #888; /* Change button color when hovering */
+}
+
+.navbar a.active {
+  background-color: #ff6347; /* Highlight the active link with a different color */
+}

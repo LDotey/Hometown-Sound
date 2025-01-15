@@ -11,6 +11,30 @@ const MyProvider = ({ children }) => {
   const [cities, setCities] = useState([]);
   const [genres, setGenres] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // Check if user is logged in after the component mounts
+  useEffect(() => {
+    // You can make a fetch request to get the current user from your backend
+    fetch("/current_user", {
+      method: "GET",
+      credentials: "include", // Send cookies with the request
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data && data.username) {
+          // If user data is found, set the user and mark as authenticated
+          setUser(data);
+          setIsAuthenticated(true);
+        } else {
+          // Otherwise, reset the user and mark as not authenticated
+          setUser({ cities: [], genres: [] });
+          setIsAuthenticated(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching current user:", error);
+        setIsAuthenticated(false); // In case the user is not logged in
+      });
+  }, []);
 
   useEffect(() => {
     // Fetch the current logged-in user
