@@ -9,7 +9,7 @@ function App() {
   return (
     <div>
       <MyProvider>
-        <h1>Project Client</h1>
+        <h1>Hometown Sound</h1>
         <NavBar />
         <Outlet />
       </MyProvider>

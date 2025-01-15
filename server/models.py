@@ -8,12 +8,25 @@ from config import db, bcrypt, login_manager
 
 class User(db.Model, UserMixin, SerializerMixin):
     __tablename__ = "users"
+    serialize_rules = ('-artists', '-_password_hash', 'cities', 'genres',)
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, nullable=False, unique=True)
     _password_hash = db.Column(db.String, nullable=False)
 
     artists = db.relationship('Artist', back_populates='user')
+
+     # Access cities through the artist's relationship
+    @property
+    def cities(self):
+        return [artist.city for artist in self.artists]
+
+    # Access genres through the artist's relationship
+    @property
+    def genres(self):
+        return [artist.genre for artist in self.artists]
+
+    
 
     def set_password(self, password):
         self._password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
@@ -25,17 +38,17 @@ class User(db.Model, UserMixin, SerializerMixin):
     def get_id(self):
         return str(self.id)
     
-    @property
-    def is_authenticated(self):
-        return True
+    # @property
+    # def is_authenticated(self):
+    #     return True
     
-    @property
-    def is_active(self):
-        return True
+    # @property
+    # def is_active(self):
+    #     return True
     
-    @property
-    def is_anonymous(self):
-        return False
+    # @property
+    # def is_anonymous(self):
+    #     return False
      
       # Flask-Login User Loader
     @login_manager.user_loader

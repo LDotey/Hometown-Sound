@@ -5,7 +5,7 @@ import { MyContext } from "./AppContext";
 import { useNavigate } from "react-router-dom";
 
 function CreateLogin() {
-  const { setUser } = useContext(MyContext);
+  const { setUser, setIsAuthenticated } = useContext(MyContext);
   const navigate = useNavigate();
 
   const formSchema = yup.object().shape({
@@ -28,53 +28,27 @@ function CreateLogin() {
         },
         body: JSON.stringify(values),
       })
-        .then((response) => response.json())
-        .then((userLogin) => {
-          if (userLogin && userLogin.username) {
-            setUser(userLogin); //  the logged-in user in the context
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Invalid credentials");
+          }
+          return response.json();
+        })
+        .then((user) => {
+          if (user && user.username) {
+            // user = {...userLogin, userFetchedFlag: true}
+            setUser(user); //  the logged-in user in the context
             formik.resetForm();
             navigate("/profile");
           }
         })
-        .catch((error) => console.error("Login failed:", error));
+        .catch((error) => {
+          console.error("Login failed:", error);
+          alert("Invalid login credentials. Please try again.");
+        });
     },
   });
 
-  //   (values) => {
-  //     console.log("Login data submitted:", values);
-
-  //     fetch("/login", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(values),
-  //     })
-  //       .then((response) => response.json())
-  //       .then((userLogin) => {
-  //         if (userLogin) {
-  //           setUser(userLogin);
-  //           setIsAuthenticated(true);
-
-  //           // fetch the current user's profile data
-  //           fetch("/current_user")
-  //             .then((response) => response.json())
-  //             .then((userProfile) => {
-  //               setUser(userProfile);
-  //               setIsAuthenticated(true);
-  //               formik.resetForm();
-  //             })
-  //             .catch((err) => {
-  //               console.error("Error fetching current user:", err);
-  //               setIsAuthenticated(false);
-  //             });
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error during login:", error);
-  //       });
-  //   },
-  // });
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
@@ -107,3 +81,39 @@ function CreateLogin() {
 }
 
 export default CreateLogin;
+
+//   (values) => {
+//     console.log("Login data submitted:", values);
+
+//     fetch("/login", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify(values),
+//     })
+//       .then((response) => response.json())
+//       .then((userLogin) => {
+//         if (userLogin) {
+//           setUser(userLogin);
+//           setIsAuthenticated(true);
+
+//           // fetch the current user's profile data
+//           fetch("/current_user")
+//             .then((response) => response.json())
+//             .then((userProfile) => {
+//               setUser(userProfile);
+//               setIsAuthenticated(true);
+//               formik.resetForm();
+//             })
+//             .catch((err) => {
+//               console.error("Error fetching current user:", err);
+//               setIsAuthenticated(false);
+//             });
+//         }
+//       })
+//       .catch((error) => {
+//         console.error("Error during login:", error);
+//       });
+//   },
+// });

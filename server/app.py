@@ -3,9 +3,9 @@
 # Standard library imports
 
 # Remote library imports
-from flask import request
+from flask import request, session
 from flask_restful import Resource
-from flask_login import current_user, login_user, logout_user, login_required
+from flask_login import current_user, login_user, logout_user, login_required, login_remembered
 
 # Local imports
 from config import app, db, api, login_manager
@@ -48,6 +48,7 @@ class Artists(Resource):
     
 class Login(Resource):
     def post(self):
+
         json = request.get_json()
         username = json.get('username')
         password = json.get('password')
@@ -63,8 +64,10 @@ class Login(Resource):
         # login_user() sets the ID in the session and marks them as authenticated
         if user and user.check_password(password):
             login_user(user, remember=True)
-            
+
             print(current_user) # check if current user is set correctly
+            print(session)
+            print(user)
 
             return user.to_dict(rules=('-_password_hash',)), 201
         
@@ -76,17 +79,25 @@ class Logout(Resource):
         logout_user()
         return {'message': 'Logged out successfully'}, 200
     
-# @login_required
-class CurrentUser(Resource):
-    @login_required
-    def get(self):
-        print(current_user)
-        if current_user.is_authenticated:
-            user_dict = current_user.to_dict()
 
+class CurrentUser(Resource):
+    @login_required 
+
+    def get(self):
+        # if current_user:
+        #      logout_user()
+        # logout_user()
+        # breakpoint()
+        print("Session data:", session)  
+        print("Current user:", current_user)  
+        print("Is authenticated?", current_user.is_authenticated)  
+
+        if current_user.is_authenticated:
+            # breakpoint()
+            user_dict = current_user.to_dict()  
             return user_dict, 200
         else:
-            return False
+            return {'message': 'User not authenticated'}, 401
 
 api.add_resource(Users, '/users')
 api.add_resource(Cities, '/cities')
