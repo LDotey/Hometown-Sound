@@ -38,6 +38,7 @@ function CreateLogin() {
           if (user && user.username) {
             // user = {...userLogin, userFetchedFlag: true}
             setUser(user); //  the logged-in user in the context
+            setIsAuthenticated(true);
             formik.resetForm();
             navigate("/profile");
           }

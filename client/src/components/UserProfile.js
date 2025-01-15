@@ -3,30 +3,46 @@ import { MyContext } from "./AppContext";
 import { useNavigate } from "react-router-dom";
 
 function UserProfile() {
-  const { user, isAuthenticated } = useContext(MyContext);
+  const { user, setUser, isAuthenticated, setIsAuthenticated } =
+    useContext(MyContext);
   const navigate = useNavigate();
-  // const [finishedFlag, setFinishedFlag] = useState(false)
 
   useEffect(() => {
-    if (user.username) {
-      if (!isAuthenticated) {
-        navigate("/login");
-      }
+    if (!isAuthenticated) {
+      navigate("/login");
     }
-  }, [user, isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate]);
 
-  // if (!isAuthenticated) {
-  //   return <div>You are not logged in.</div>;
-  // }
-  // if (isAuthenticated) {
-  if (user.username && !isAuthenticated) {
+  const handleLogout = () => {
+    fetch("/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include", // Make sure to include credentials for session cookies
+    })
+      .then((response) => {
+        if (response.ok) {
+          setUser(null); // Clear user data in context
+          setIsAuthenticated(false); // Update the authentication state
+          navigate("/login"); // Redirect to login page
+        }
+      })
+      .catch((err) => {
+        console.error("Logout failed:", err);
+        alert("An error occurred during logout.");
+      });
+  };
+
+  if (!isAuthenticated) {
     return <div>Redirecting to login...</div>;
-  } else if (!user.username) {
+  } else if (!user) {
     return <div>Log in you loser</div>;
   } else {
     return (
       <div>
         <h1>Welcome {user.username}!</h1>
+        <button onClick={handleLogout}>Logout</button>
         <h2>Cities:</h2>
         <ul>
           {user.cities ? (
