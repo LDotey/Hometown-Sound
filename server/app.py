@@ -36,6 +36,18 @@ class Cities(Resource):
         cities = [city.to_dict() for city in City.query.all()]
         return cities, 200
     
+    def post(self):
+        data = request.get_json()
+        new_city = City(
+            name=data["name"],
+            location=data["location"]
+        
+        )
+        db.session.add(new_city)
+        db.session.commit()
+
+        return new_city.to_dict(), 201
+    
 class Genres(Resource):
     def get(self):
         genres = [genre.to_dict() for genre in Genre.query.all()]
@@ -127,6 +139,33 @@ class CheckSession(Resource):
             'cities': [{'id': city.id, 'name': city.name, 'location': city.location} for city in user_cities],
             'genres': [{'id': genre.id, 'name': genre.name, 'color': genre.color} for genre in user_genres]
         }, 200
+    
+class GenresByCity(Resource):
+    @login_required
+    def get(self, city_id):
+        # Fetch the user
+        user = User.query.filter(User.id == current_user.id).first()
+
+        if not user:
+            return {'message': 'User not found'}, 404
+
+        #  a set to hold the genres
+        genres_count = {}
+
+        # Loop through the user's artists and collect genres for a specific city
+        for artist in user.artists:
+            if artist.city and artist.city.id == city_id:
+                genre_name = artist.genre.name
+                if genre_name in genres_count:
+                    genres_count[genre_name] += 1
+                else:
+                    genres_count[genre_name] = 1
+
+        # Return the genres and their counts
+        return {
+            'genres': [{'name': genre, 'count': count} for genre, count in genres_count.items()]
+        }, 200
+
 
 
             
@@ -139,6 +178,7 @@ api.add_resource(Login, '/login')
 api.add_resource(Logout, '/logout')
 api.add_resource(CurrentUser, '/current_user')
 api.add_resource(CheckSession, '/checksession')
+api.add_resource(GenresByCity, '/')
 
 
 if __name__ == '__main__':
