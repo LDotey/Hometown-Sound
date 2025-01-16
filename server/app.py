@@ -77,6 +77,7 @@ class Logout(Resource):
     @login_required
     def post(self):
         logout_user()
+        session.clear()
         return {'message': 'Logged out successfully'}, 200
     
 
@@ -98,6 +99,37 @@ class CurrentUser(Resource):
             return user_dict, 200
         else:
             return {'message': 'User not authenticated'}, 401
+        
+class CheckSession(Resource):
+    def get(self):
+        # fetch the user based on the logged-in user's id
+        user = User.query.filter(User.id == current_user.id).first()
+
+        if not user:
+            return {'message': 'User not found'}, 404
+
+        # initialize lists to hold the filtered cities and genres (sets won't allow duplicates)
+        user_cities = set()
+        user_genres = set()
+
+        # loop through the user's artists and collect their cities and genres
+        for artist in user.artists:
+            # Check if the artist's city belongs to the current user
+            if artist.city and artist.city.id == artist.user_id:  # Corrected: check city for the user_id
+                user_cities.add(artist.city)
+
+            # Add the artist's genre to the set of user_genres
+            if artist.genre:
+                user_genres.add(artist.genre)
+
+        # Return cities and genres associated with the user
+        return {
+            'cities': [{'id': city.id, 'name': city.name, 'location': city.location} for city in user_cities],
+            'genres': [{'id': genre.id, 'name': genre.name, 'color': genre.color} for genre in user_genres]
+        }, 200
+
+
+            
 
 api.add_resource(Users, '/users')
 api.add_resource(Cities, '/cities')
@@ -106,8 +138,27 @@ api.add_resource(Artists, '/artists')
 api.add_resource(Login, '/login')
 api.add_resource(Logout, '/logout')
 api.add_resource(CurrentUser, '/current_user')
+api.add_resource(CheckSession, '/checksession')
 
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
+
+
+        
+        
+
+        # bucket is artist
+        # item is genre / city
+
+#         Data Structure Mismatch:
+
+# Ensure that the data you are sending 
+# from the backend has the expected structure. 
+# For example, if the backend is sending { cities: [] }, 
+# your frontend code should be looking for user.cities.
+
+# If the data structure changes 
+# (for example, if it's wrapped in an additional object), 
+# your frontend will need to adjust accordingly.
 

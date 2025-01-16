@@ -9,18 +9,18 @@ function NavBar() {
     <nav className="navbar">
       {/* Conditionally render Login or Profile link based on authentication */}
       {isAuthenticated ? (
-        <NavLink to="/profile" activeClassName="active">
+        <NavLink to="/profile" activeclassname="active">
           Profile
         </NavLink>
       ) : (
-        <NavLink to="/login" activeClassName="active">
+        <NavLink to="/login" activeclassname="active">
           Login
         </NavLink>
       )}
-      <NavLink to="/genres" activeClassName="active">
+      <NavLink to="/genres" activeclassname="active">
         Genres
       </NavLink>
-      <NavLink to="/cities" activeClassName="active">
+      <NavLink to="/cities" activeclassname="active">
         Cities
       </NavLink>
     </nav>

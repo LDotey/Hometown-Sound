@@ -19,12 +19,12 @@ class User(db.Model, UserMixin, SerializerMixin):
      # Access cities through the artist's relationship
     @property
     def cities(self):
-        return [artist.city for artist in self.artists]
+        return list({artist.city for artist in self.artists}) # convert cities to a set then back in to a list to avoid duplicates.
 
     # Access genres through the artist's relationship
     @property
     def genres(self):
-        return [artist.genre for artist in self.artists]
+        return list({artist.genre for artist in self.artists}) # convert genres to a set then back in to a list to avoid duplicates.
 
     
 
@@ -111,5 +111,5 @@ class Artist(db.Model, SerializerMixin):
     serialize_rules = ('-user', '-user.artists', '-city.artists', '-genre.artists', '-genre_id', '-user_id', '-user.username')
 
     def __repr__(self):
-        return f'<Artist {self.id}, User: {self.user_id}, City: {self.city_id}, Genre: {self.genre_id}'
+        return f'<Artist: {self.name} ID: {self.id}, User: {self.user_id}, City: {self.city_id}, Genre: {self.genre_id}'
     
