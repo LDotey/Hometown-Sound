@@ -8,9 +8,13 @@ const MyProvider = ({ children }) => {
     genres: [],
     userFetchedFlag: false,
   });
+
   const [cities, setCities] = useState([]);
   const [genres, setGenres] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [artists, setArtists] = useState([]);
+  const [selectedCity, setSelectedCity] = useState(null);
+
   // Check if user is logged in after the component mounts
   useEffect(() => {
     fetch("/current_user", {
@@ -31,7 +35,7 @@ const MyProvider = ({ children }) => {
       })
       .catch((error) => {
         console.error("Error fetching current user:", error);
-        setIsAuthenticated(false); // In case the user is not logged in
+        setIsAuthenticated(false); // in case the user is not logged in
       });
   }, []);
 
@@ -89,6 +93,10 @@ const MyProvider = ({ children }) => {
         setCities,
         genres,
         setGenres,
+        artists,
+        setArtists,
+        selectedCity,
+        setSelectedCity,
         isAuthenticated,
         setIsAuthenticated,
       }}

@@ -58,6 +58,55 @@ class Artists(Resource):
         artists = [artist.to_dict() for artist in Artist.query.all()]
         return artists, 200
     
+    def post(self):
+        data = request.get_json()
+        breakpoint()
+
+        # Fetch or create city
+        city_name = data.get("city_name")
+        city_location = data.get("city_location")
+        city = City.query.filter_by(name=city_name).first()
+
+        if not city:
+            # If city doesn't exist, create it
+            city = City(name=city_name, location=city_location)
+            db.session.add(city)
+            db.session.commit()
+
+        # Create the artist
+        artist = Artist(
+            name=data.get("artist_name"),
+            image=data.get("artist_image"),
+            user_id=current_user.id,
+            city_id=city.id,
+            genre_id=data.get("genre_id"),
+        )
+        
+        db.session.add(artist)
+        db.session.commit()
+
+        return {"message": "Artist created successfully"}, 201
+    
+class ArtistsByCity(Resource):
+    def get(self, user_id, city_id):
+
+        user = User.query.filter(User.id == user_id).first()
+        artists = Artist.query.filter(Artist.user_id == user.id, Artist.city_id == city_id).all()
+
+        users_artists = [artist.to_dict() for artist in artists]
+
+        return {'artists': users_artists}, 200
+
+
+    
+# class TrailsByHikerID(Resource):
+#     def get(self, hiker_id):
+
+#         trails = Trail.query.filter_by(hiker_id=hiker_id).all()
+#         trails = [trail.to_dict() for trail in trails if trail.hiker_id==hiker_id]
+
+#         return {'trails': trails}, 200
+    
 class Login(Resource):
     def post(self):
 
@@ -179,6 +228,7 @@ api.add_resource(Logout, '/logout')
 api.add_resource(CurrentUser, '/current_user')
 api.add_resource(CheckSession, '/checksession')
 api.add_resource(GenresByCity, '/')
+api.add_resource(ArtistsByCity, '/artists/user/<int:user_id>/city/<int:city_id>')
 
 
 if __name__ == '__main__':

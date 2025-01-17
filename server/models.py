@@ -15,16 +15,25 @@ class User(db.Model, UserMixin, SerializerMixin):
     _password_hash = db.Column(db.String, nullable=False)
 
     artists = db.relationship('Artist', back_populates='user')
+    cities = db.relationship('City', secondary='artists', viewonly = True)
+    genres = db.relationship('Genre', secondary='artists', viewonly=True)
+    
+    # items = db.relationship('Item', back_populates='user', cascade='all, delete-orphan')
+
+    # buckets = db.relationship(
+    #     'Bucket',
+    #     secondary='items',
+    #     viewonly=True)
 
      # Access cities through the artist's relationship
-    @property
-    def cities(self):
-        return list({artist.city for artist in self.artists}) # convert cities to a set then back in to a list to avoid duplicates.
+    # @property
+    # def cities(self):
+    #     return list({artist.city for artist in self.artists}) # convert cities to a set then back in to a list to avoid duplicates.
 
-    # Access genres through the artist's relationship
-    @property
-    def genres(self):
-        return list({artist.genre for artist in self.artists}) # convert genres to a set then back in to a list to avoid duplicates.
+    # # Access genres through the artist's relationship
+    # @property
+    # def genres(self):
+    #     return list({artist.genre for artist in self.artists}) # convert genres to a set then back in to a list to avoid duplicates.
 
     
 
