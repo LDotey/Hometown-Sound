@@ -49,7 +49,7 @@ class Cities(Resource):
             name=city_name,
             location=city_location        
         )
-        
+
         db.session.add(new_city)
         db.session.commit()
 
@@ -67,25 +67,27 @@ class Artists(Resource):
     
     def post(self):
         data = request.get_json()
-        breakpoint()
+        # breakpoint()
 
-        # Fetch or create city
         city_name = data.get("city_name")
         city_location = data.get("city_location")
-        city = City.query.filter_by(name=city_name).first()
+        city_id = data.get("city_id")
 
-        if not city:
-            # If city doesn't exist, create it
-            city = City(name=city_name, location=city_location)
-            db.session.add(city)
-            db.session.commit()
-
+        # Check if city_id is provided, if not, create a new city
+        if not city_id and city_name and city_location:
+            city = City.query.filter_by(name=city_name).first()
+            if not city:
+                city = City(name=city_name, location=city_location)
+                db.session.add(city)
+                db.session.commit()
+            city_id = city.id  # Use the ID of the new or existing city
+        
         # Create the artist
         artist = Artist(
-            name=data.get("artist_name"),
-            image=data.get("artist_image"),
-            user_id=current_user.id,
-            city_id=city.id,
+            name=data.get("name"),
+            image=data.get("image"),
+            user_id=data.get("user_id"),
+            city_id=city_id,
             genre_id=data.get("genre_id"),
         )
         
@@ -93,7 +95,7 @@ class Artists(Resource):
         db.session.commit()
 
         return {"message": "Artist created successfully"}, 201
-    
+        
 class ArtistsByCity(Resource):
     def get(self, user_id, city_id):
 
@@ -106,7 +108,6 @@ class ArtistsByCity(Resource):
 
         return {'artists': users_artists}, 200
     
-
 class ArtistsByGenre(Resource):
     def get(self, user_id, genre_id):
 
@@ -118,15 +119,6 @@ class ArtistsByGenre(Resource):
         users_artists = [artist.to_dict() for artist in artists]
 
         return {'artists': users_artists}, 200
-
-    
-# class TrailsByHikerID(Resource):
-#     def get(self, hiker_id):
-
-#         trails = Trail.query.filter_by(hiker_id=hiker_id).all()
-#         trails = [trail.to_dict() for trail in trails if trail.hiker_id==hiker_id]
-
-#         return {'trails': trails}, 200
     
 class Login(Resource):
     def post(self):
@@ -162,7 +154,6 @@ class Logout(Resource):
         session.clear()
         return {'message': 'Logged out successfully'}, 200
     
-
 class CurrentUser(Resource):
     @login_required 
 

@@ -6,11 +6,10 @@ import { useNavigate } from "react-router-dom";
 
 function CreateCity() {
   const { cities, setCities } = useContext(MyContext);
-  const [newLocation, setNewLocation] = useState(""); // Track new location input
+  const [newLocation, setNewLocation] = useState(""); // track new location input
 
   const navigate = useNavigate();
 
-  // Function to capitalize the first letter of each word
   function capitalizeWords(str) {
     return str
       .split(" ") // Split the string into words

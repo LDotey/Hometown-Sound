@@ -5,6 +5,7 @@ import { MyContext } from "./AppContext";
 
 const CreateArtist = () => {
   const { cities, genres, user, artists, setArtists } = useContext(MyContext);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const formSchema = yup.object().shape({
     name: yup.string().required("Artist name is required"),
@@ -37,6 +38,7 @@ const CreateArtist = () => {
       city_name: "",
       city_location: "",
       genre_id: "",
+      user_id: user.id,
     },
     // initialValues: {
     //   name: "",
@@ -45,43 +47,47 @@ const CreateArtist = () => {
     //   city_id: "",
     //   genre_id: "",
     // },
-    validationSchema: formSchema,
 
+    validationSchema: formSchema,
+    validateOnChange: true, // Make sure Formik validates on change
+    validateOnBlur: true, // Make sure Formik validates on blur
     onSubmit: async (values) => {
-      console.log("Form data submitted: ", values);
+      console.log("Formik is valid:", formik.isValid); // Logs whether the form is valid
+      console.log("Formik errors:", formik.errors); // Logs any validation errors
+
+      if (!formik.isValid) {
+        console.error("Form is invalid. Check errors above.");
+        return; // Prevent form submission if invalid
+      }
+      console.log("Formik values at submission:", values);
 
       try {
         let body;
-        if (values.city_id == 0) {
+
+        if (values.city_id === 0) {
+          // If no city is selected (new city is being created)
           body = {
             name: values.name,
             image: values.image,
-            // city_id: values.city_id,
-            city_name: values.city_name,
-            city_location: values.city_location,
+            city_name: values.city_name, // New city name
+            city_location: values.city_location, // New city location
             genre_id: values.genre_id,
+            user_id: user.id, // assuming user is logged in and user.id is available
           };
         } else {
+          // If a city is selected from the dropdown
           body = {
             name: values.name,
             image: values.image,
-            city_id: values.city_id,
-            // city_name: values.city_name,
-            // city_location: values.city_location,
+            city_id: values.city_id, // Existing city id
             genre_id: values.genre_id,
+            user_id: user.id, // assuming user is logged in and user.id is available
           };
         }
 
-        // // check if a new city is being created or selected
-        // body = {
-        //   name: values.name,
-        //   image: values.image,
-        //   city_id: values.city_id,
-        //   city_name: values.city_name,
-        //   city_location: values.city_location,
-        //   genre_id: values.genre_id,
-        // };
+        console.log("Body to send to server:", body); // Log body before sending
 
+        // Send request to backend to create artist
         const response = await fetch("/artists", {
           method: "POST",
           headers: {
@@ -95,102 +101,197 @@ const CreateArtist = () => {
         }
 
         const newArtist = await response.json();
-        alert("Artist created successfully!");
+        console.log("Artist created:", newArtist);
+
+        // const newArtist = await response.json();
+        // alert("Artist created successfully!");
+
+        // Show success notification
+        setShowSuccess(true); // Trigger success state
 
         setArtists((prevArtists) => [...prevArtists, newArtist]);
 
         formik.resetForm();
+
+        // Hide success message after 3 seconds
+        setTimeout(() => {
+          setShowSuccess(false); // Hide success message
+        }, 3000);
       } catch (error) {
         console.error("Error creating artist:", error);
         alert("There was an error creating the artist.");
       }
     },
+
+    // onSubmit: async (values) => {
+    //   console.log("Formik is valid:", formik.isValid); // Logs whether the form is valid
+    //   console.log("Formik errors:", formik.errors); // Logs any validation errors
+
+    //   if (!formik.isValid) {
+    //     console.error("Form is invalid. Check errors above.");
+    //     return; // Prevent form submission if invalid
+    //   }
+    //   console.log("Formik values at submission:", values);
+
+    //   try {
+    //     let body;
+    //     if (values.city_id == 0) {
+    //       body = {
+    //         name: values.name,
+    //         image: values.image,
+    //         // city_id: values.city_id,
+    //         city_name: values.city_name,
+    //         city_location: values.city_location,
+    //         genre_id: values.genre_id,
+    //       };
+    //     } else {
+    //       body = {
+    //         name: values.name,
+    //         image: values.image,
+    //         city_id: values.city_id,
+    //         // city_name: values.city_name,
+    //         // city_location: values.city_location,
+    //         genre_id: values.genre_id,
+    //       };
+    //     }
+    //     console.log("Body to send to server:", body); // Log body before sending
+
+    //     const response = await fetch("/artists", {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //       body: JSON.stringify(body),
+    //     });
+
+    //     if (!response.ok) {
+    //       throw new Error("Failed to create artist");
+    //     }
+
+    //     const newArtist = await response.json();
+    //     alert("Artist created successfully!");
+
+    //     setArtists((prevArtists) => [...prevArtists, newArtist]);
+
+    //     formik.resetForm();
+    //   } catch (error) {
+    //     console.error("Error creating artist:", error);
+    //     alert("There was an error creating the artist.");
+    //   }
+    // },
   });
+  useEffect(() => {
+    console.log("Formik is valid:", formik.isValid);
+    console.log("Formik errors:", formik.errors);
+  }, [formik.values]); // Only trigger when form values change
+  useEffect(() => {
+    console.log("Formik initial values:", formik.values); // Log initial values
+  }, [formik.values]); // Runs whenever formik values change
 
   return (
-    <form onSubmit={formik.handleSubmit}>
-      <div>
-        <label htmlFor="name">Artist Name:</label>
-        <input
-          id="name"
-          name="name"
-          type="text"
-          onChange={formik.handleChange}
-          value={formik.values.name}
-        />
-      </div>
-
-      <div>
-        <label htmlFor="image">Artist Image URL:</label>
-        <input
-          id="image"
-          name="image"
-          type="text"
-          onChange={formik.handleChange}
-          value={formik.values.image}
-        />
-      </div>
-
-      <div>
-        <label htmlFor="city_id">City:</label>
-        <select
-          id="city_id"
-          name="city_id"
-          onChange={formik.handleChange}
-          value={formik.values.city_id}
-        >
-          <option value="">Select a City</option>
-          {cities.map((city) => (
-            <option key={city.id} value={city.id}>
-              {city.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* If no city is selected, show fields for creating a new city */}
-      {!formik.values.city_id && (
+    <div>
+      {/* Form for creating an artist */}
+      <form onSubmit={formik.handleSubmit}>
         <div>
-          <label htmlFor="city_name">New City Name:</label>
+          <label htmlFor="name">Artist Name:</label>
           <input
-            id="city_name"
-            name="city_name"
+            id="name"
+            name="name"
             type="text"
             onChange={formik.handleChange}
-            value={formik.values.city_name}
-          />
-
-          <label htmlFor="city_location">City Location:</label>
-          <input
-            id="city_location"
-            name="city_location"
-            type="text"
-            onChange={formik.handleChange}
-            value={formik.values.city_location}
+            value={formik.values.name}
           />
         </div>
+
+        <div>
+          <label htmlFor="image">Artist Image URL:</label>
+          <input
+            id="image"
+            name="image"
+            type="text"
+            onChange={formik.handleChange}
+            value={formik.values.image}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="city_id">City:</label>
+          <select
+            id="city_id"
+            name="city_id"
+            onChange={formik.handleChange}
+            value={formik.values.city_id}
+          >
+            <option value="">Select a City</option>
+            {cities.map((city) => (
+              <option key={city.id} value={city.id}>
+                {city.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* If no city is selected, show fields for creating a new city */}
+        {!formik.values.city_id && (
+          <div>
+            <label htmlFor="city_name">New City Name:</label>
+            <input
+              id="city_name"
+              name="city_name"
+              type="text"
+              onChange={formik.handleChange}
+              value={formik.values.city_name}
+            />
+
+            <label htmlFor="city_location">City Location:</label>
+            <input
+              id="city_location"
+              name="city_location"
+              type="text"
+              onChange={formik.handleChange}
+              value={formik.values.city_location}
+            />
+          </div>
+        )}
+
+        <div>
+          <label htmlFor="genre_id">Genre:</label>
+          <select
+            id="genre_id"
+            name="genre_id"
+            onChange={formik.handleChange}
+            value={formik.values.genre_id}
+          >
+            <option value="">Select a Genre</option>
+            {genres.map((genre) => (
+              <option key={genre.id} value={genre.id}>
+                {genre.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <button type="submit">Create Artist</button>
+      </form>
+
+      {/* Success notification */}
+      {showSuccess && (
+        <div className="success-message">
+          <span>✔️</span> Artist created successfully!
+        </div>
       )}
-
-      <div>
-        <label htmlFor="genre_id">Genre:</label>
-        <select
-          id="genre_id"
-          name="genre_id"
-          onChange={formik.handleChange}
-          value={formik.values.genre_id}
-        >
-          <option value="">Select a Genre</option>
-          {genres.map((genre) => (
-            <option key={genre.id} value={genre.id}>
-              {genre.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <button type="submit">Create Artist</button>
-    </form>
+    </div>
   );
 };
 
 export default CreateArtist;
+
+// // check if a new city is being created or selected
+// body = {
+//   name: values.name,
+//   image: values.image,
+//   city_id: values.city_id,
+//   city_name: values.city_name,
+//   city_location: values.city_location,
+//   genre_id: values.genre_id,
+// };
