@@ -8,6 +8,8 @@ import UserGenres from "./UserGenres";
 function UserProfile() {
   const { user, setUser, isAuthenticated, setIsAuthenticated } =
     useContext(MyContext);
+  const [showCities, setShowCities] = useState(false); // State for Cities section
+  const [showGenres, setShowGenres] = useState(false); // State for Genres section
   const [showCreateForm, setShowCreateForm] = useState(false);
   const navigate = useNavigate();
 
@@ -42,6 +44,14 @@ function UserProfile() {
     setShowCreateForm((prev) => !prev);
   };
 
+  const toggleCities = () => {
+    setShowCities((prev) => !prev); // Toggle Cities section visibility
+  };
+
+  const toggleGenres = () => {
+    setShowGenres((prev) => !prev); // Toggle Genres section visibility
+  };
+
   if (!isAuthenticated) {
     return <div>Redirecting to login...</div>;
   } else if (!user) {
@@ -56,9 +66,25 @@ function UserProfile() {
         </button>
         {showCreateForm && <CreateArtist />}
 
-        <UserCities />
-        <br />
-        <UserGenres />
+        <div>
+          <h2
+            onClick={toggleCities}
+            style={{ cursor: "pointer", color: "blue" }}
+          >
+            {showCities ? "Hide Cities" : "Show Cities"}
+          </h2>
+          {showCities && <UserCities />}
+        </div>
+
+        <div>
+          <h2
+            onClick={toggleGenres}
+            style={{ cursor: "pointer", color: "blue" }}
+          >
+            {showGenres ? "Hide Genres" : "Show Genres"}
+          </h2>
+          {showGenres && <UserGenres />}
+        </div>
       </div>
     );
   }

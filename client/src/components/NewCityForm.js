@@ -1,11 +1,13 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { MyContext } from "./AppContext";
 import { useNavigate } from "react-router-dom";
 
 function CreateCity() {
-  const { setCities } = useContext(MyContext);
+  const { cities, setCities } = useContext(MyContext);
+  const [newLocation, setNewLocation] = useState(""); // Track new location input
+
   const navigate = useNavigate();
 
   const formSchema = yup.object().shape({
@@ -23,17 +25,20 @@ function CreateCity() {
     onSubmit: (values) => {
       console.log("NewCity formdata submitted:", values);
 
+      // If the location is a new one, make sure to add it to global state and backend
+      const locationToSubmit = newLocation || values.location;
+
       // send formdata to backend
       fetch("/cities", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify({ name: values.name, location: locationToSubmit }),
       })
         .then((resp) => resp.json())
         .then((newCity) => {
-          console.log(newCity);
+          console.log("Created city:", newCity);
           setCities((prevCities) => [...prevCities, newCity]);
 
           formik.resetForm();
@@ -45,6 +50,19 @@ function CreateCity() {
       console.log(formik.values);
     },
   });
+
+  // Fetch existing cities from backend on component mount
+  useEffect(() => {
+    fetch("/cities")
+      .then((resp) => resp.json())
+      .then((data) => {
+        setCities(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching cities:", error);
+      });
+  }, [setCities]);
+
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
@@ -61,14 +79,38 @@ function CreateCity() {
 
         <label htmlFor="location">Location:</label>
         <br />
-        <input
+        <select
           id="location"
           name="location"
-          type="text"
-          onChange={formik.handleChange}
+          onChange={(e) => {
+            formik.handleChange(e);
+            setNewLocation(""); // Reset the new location when selecting from dropdown
+          }}
           value={formik.values.location}
-        />
-        <p style={{ color: "red" }}>{formik.errors.location}</p>
+        >
+          <option value="">Select a location</option>
+          {cities.map((city) => (
+            <option key={city.id} value={city.location}>
+              {city.location}
+            </option>
+          ))}
+          <option value="new">Add a new location</option>
+        </select>
+
+        {/* Show an input field if the user selects to add a new location */}
+        {formik.values.location === "new" && (
+          <div>
+            <input
+              type="text"
+              value={newLocation}
+              onChange={(e) => setNewLocation(e.target.value)}
+              placeholder="Enter new location"
+            />
+            <p style={{ color: "red" }}>
+              {newLocation === "" && "New location is required"}
+            </p>
+          </div>
+        )}
 
         <button type="submit">Create City</button>
       </form>
