@@ -3,6 +3,7 @@ import { MyContext } from "./AppContext";
 import { useNavigate } from "react-router-dom";
 import CreateArtist from "./NewArtistForm";
 import UserCities from "./UserCities";
+import UserGenres from "./UserGenres";
 
 function UserProfile() {
   const { user, setUser, isAuthenticated, setIsAuthenticated } =
@@ -56,26 +57,11 @@ function UserProfile() {
         {showCreateForm && <CreateArtist />}
 
         <UserCities />
+        <br />
+        <UserGenres />
       </div>
     );
   }
 }
 
 export default UserProfile;
-
-/* <h2>Cities:</h2>
-        <ul>
-          {user.cities ? (
-            user.cities.map((city) => <li key={city.id}>{city.name}</li>)
-          ) : (
-            <p>No cities associated with your profile.</p>
-          )}
-        </ul>
-        <h2>Genres:</h2>
-        <ul>
-          {user.genres ? (
-            user.genres.map((genre) => <li key={genre.id}>{genre.name}</li>)
-          ) : (
-            <p>No genres associated with your profile.</p>
-          )}
-        </ul> */

@@ -100,7 +100,17 @@ class ArtistsByCity(Resource):
         return {'artists': users_artists}, 200
     
 
+class ArtistsByGenre(Resource):
+    def get(self, user_id, genre_id):
 
+        user = User.query.filter(User.id == user_id).first()
+        if not user:
+            return {"message": "User not found"}, 404
+        artists = Artist.query.filter(Artist.user_id == user.id, Artist.genre_id == genre_id).all()
+
+        users_artists = [artist.to_dict() for artist in artists]
+
+        return {'artists': users_artists}, 200
 
     
 # class TrailsByHikerID(Resource):
@@ -233,6 +243,7 @@ api.add_resource(CurrentUser, '/current_user')
 api.add_resource(CheckSession, '/checksession')
 api.add_resource(GenresByCity, '/')
 api.add_resource(ArtistsByCity, '/artists/user/<int:user_id>/city/<int:city_id>')
+api.add_resource(ArtistsByGenre, '/artists/user/<int:user_id>/genre/<int:genre_id>')
 
 
 if __name__ == '__main__':
