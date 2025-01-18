@@ -15,11 +15,17 @@ function UserCities() {
     setSelectedCity(city.id);
 
     // Fetch artists for the selected city
-    const response = await fetch(
-      `/artists?user_id=${user.id}&city_id=${city.id}`
-    );
+    const response = await fetch(`/artists/user/${user.id}/city/${city.id}`);
     const data = await response.json();
-    setArtists(data.artists);
+    console.log("Full response:", data); // Log the full response here
+
+    // Instead of checking data.artists, set artists directly from data
+    if (Array.isArray(data.artists)) {
+      console.log("Setting artists:", data.artists); // Log artists being set
+      setArtists(data.artists); // Directly set the array to artists state
+    } else {
+      console.error("Artists data not found or is not an array:", data.artists);
+    }
   };
 
   return (

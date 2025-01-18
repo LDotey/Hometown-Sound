@@ -91,11 +91,15 @@ class ArtistsByCity(Resource):
     def get(self, user_id, city_id):
 
         user = User.query.filter(User.id == user_id).first()
+        if not user:
+            return {"message": "User not found"}, 404
         artists = Artist.query.filter(Artist.user_id == user.id, Artist.city_id == city_id).all()
 
         users_artists = [artist.to_dict() for artist in artists]
 
         return {'artists': users_artists}, 200
+    
+
 
 
     
