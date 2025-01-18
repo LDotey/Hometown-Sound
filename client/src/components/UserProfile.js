@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import CreateArtist from "./NewArtistForm";
 import UserCities from "./UserCities";
 import UserGenres from "./UserGenres";
+// import "./UserProfile.css";
 
 function UserProfile() {
   const { user, setUser, isAuthenticated, setIsAuthenticated } =
@@ -58,33 +59,43 @@ function UserProfile() {
     return <div>Log in you loser</div>;
   } else {
     return (
-      <div>
+      <div className="profile-container">
         <h1>Welcome {user.username}!</h1>
-        <button onClick={handleLogout}>Logout</button>
-        <button onClick={toggleCreateForm}>
-          {showCreateForm ? "Cancel" : "Add New Artist"}
-        </button>
-        {showCreateForm && <CreateArtist />}
+        {/* Buttons Row */}
+        <div className="profile-buttons">
+          <button onClick={toggleCreateForm}>
+            {showCreateForm ? "Cancel" : "Add New Artist"}
+          </button>
 
-        <div>
-          <h2
-            onClick={toggleCities}
-            style={{ cursor: "pointer", color: "blue" }}
-          >
+          <button onClick={toggleCities}>
             {showCities ? "Hide Cities" : "Show Cities"}
-          </h2>
-          {showCities && <UserCities />}
+          </button>
+
+          <button onClick={toggleGenres}>
+            {showGenres ? "Hide Genres" : "Show Genres"}
+          </button>
+
+          <button onClick={handleLogout}>Logout</button>
         </div>
 
-        <div>
-          <h2
-            onClick={toggleGenres}
-            style={{ cursor: "pointer", color: "blue" }}
-          >
-            {showGenres ? "Hide Genres" : "Show Genres"}
-          </h2>
-          {showGenres && <UserGenres />}
-        </div>
+        {/* Conditionally render sections below */}
+        {showCreateForm && (
+          <div className="form-section">
+            <CreateArtist />
+          </div>
+        )}
+
+        {showCities && (
+          <div className={`section ${showCities ? "section-show" : ""}`}>
+            <UserCities />
+          </div>
+        )}
+
+        {showGenres && (
+          <div className={`section ${showGenres ? "section-show" : ""}`}>
+            <UserGenres />
+          </div>
+        )}
       </div>
     );
   }

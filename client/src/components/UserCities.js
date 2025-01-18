@@ -30,7 +30,7 @@ function UserCities() {
 
   return (
     <div>
-      <h2>Cities:</h2>
+      {/* <h2>Cities:</h2> */}
       <ul>
         {user.cities && user.cities.length > 0 ? (
           user.cities.map((city) => (
