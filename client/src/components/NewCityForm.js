@@ -10,6 +10,18 @@ function CreateCity() {
 
   const navigate = useNavigate();
 
+  // Function to capitalize the first letter of each word
+  function capitalizeWords(str) {
+    return str
+      .split(" ") // Split the string into words
+      .map(
+        (
+          word // Map each word
+        ) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() // Capitalize the first letter, and make the rest lowercase
+      )
+      .join(" "); // Join the words back into a single string
+  }
+
   const formSchema = yup.object().shape({
     name: yup.string().required("City name is required"),
     location: yup.string().required("City location is required"),
@@ -26,7 +38,13 @@ function CreateCity() {
       console.log("NewCity formdata submitted:", values);
 
       // If the location is a new one, make sure to add it to global state and backend
-      const locationToSubmit = newLocation || values.location;
+      // const locationToSubmit = newLocation || values.location;
+
+      // Format the city name and location
+      const formattedCityName = capitalizeWords(values.name);
+      const formattedLocation = newLocation
+        ? capitalizeWords(newLocation)
+        : capitalizeWords(values.location);
 
       // send formdata to backend
       fetch("/cities", {
@@ -34,7 +52,10 @@ function CreateCity() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name: values.name, location: locationToSubmit }),
+        body: JSON.stringify({
+          name: formattedCityName,
+          location: formattedLocation,
+        }),
       })
         .then((resp) => resp.json())
         .then((newCity) => {

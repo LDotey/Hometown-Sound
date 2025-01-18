@@ -19,6 +19,8 @@ CORS(app)
 
 
 # Views go here!
+def capitalize_words(input_str):
+    return ' '.join([word.capitalize() for word in input_str.split()])
 
 @app.route('/')
 def index():
@@ -38,11 +40,16 @@ class Cities(Resource):
     
     def post(self):
         data = request.get_json()
+
+        # Capitalize the city name and location
+        city_name = capitalize_words(data['name'])
+        city_location = capitalize_words(data['location'])
+
         new_city = City(
-            name=data["name"],
-            location=data["location"]
-        
+            name=city_name,
+            location=city_location        
         )
+        
         db.session.add(new_city)
         db.session.commit()
 
