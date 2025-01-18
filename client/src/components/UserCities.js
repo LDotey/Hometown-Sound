@@ -17,7 +17,7 @@ function UserCities() {
     // Fetch artists for the selected city
     const response = await fetch(`/artists/user/${user.id}/city/${city.id}`);
     const data = await response.json();
-    console.log("Full response:", data); // Log the full response here
+    console.log("Full response:", data);
 
     // Instead of checking data.artists, set artists directly from data
     if (Array.isArray(data.artists)) {
