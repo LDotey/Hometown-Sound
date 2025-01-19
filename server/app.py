@@ -32,6 +32,18 @@ class Users(Resource):
         # breakpoint()
         users = [user.to_dict() for user in User.query.all()]
         return users, 200
+    
+    def post(self):
+        data = request.get_json()
+
+        new_user = User(
+            username = data["username"],
+            password = data["password"]
+        )
+        db.session.add(new_user)
+        db.session.commit()
+
+        return new_user.to_dict(), 201
 
 class Cities(Resource):
     def get(self):
