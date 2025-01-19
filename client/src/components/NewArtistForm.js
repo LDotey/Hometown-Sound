@@ -15,11 +15,6 @@ const CreateArtist = () => {
       .required("User ID is required")
       .positive("User ID must be a positive number")
       .integer("User ID must be an integer"),
-    // city_id: yup
-    //   .number()
-    //   .required("City ID is required")
-    //   .positive("City ID must be a positive number")
-    //   .integer("City ID must be an integer"),
     genre_id: yup
       .number()
       .required("Genre ID is required")
@@ -40,24 +35,17 @@ const CreateArtist = () => {
       genre_id: "",
       user_id: user.id,
     },
-    // initialValues: {
-    //   name: "",
-    //   image: "",
-    //   user_id: "",
-    //   city_id: "",
-    //   genre_id: "",
-    // },
 
     validationSchema: formSchema,
-    validateOnChange: true, // Make sure Formik validates on change
-    validateOnBlur: true, // Make sure Formik validates on blur
+    validateOnChange: true,
+    validateOnBlur: true,
     onSubmit: async (values) => {
-      console.log("Formik is valid:", formik.isValid); // Logs whether the form is valid
-      console.log("Formik errors:", formik.errors); // Logs any validation errors
+      console.log("Formik is valid:", formik.isValid);
+      console.log("Formik errors:", formik.errors);
 
       if (!formik.isValid) {
         console.error("Form is invalid. Check errors above.");
-        return; // Prevent form submission if invalid
+        return; // pprevent form submission if invalid
       }
       console.log("Formik values at submission:", values);
 
@@ -65,29 +53,29 @@ const CreateArtist = () => {
         let body;
 
         if (values.city_id === 0) {
-          // If no city is selected (new city is being created)
+          // if no city is selected (new city is being created)
           body = {
             name: values.name,
             image: values.image,
-            city_name: values.city_name, // New city name
-            city_location: values.city_location, // New city location
+            city_name: values.city_name,
+            city_location: values.city_location,
             genre_id: values.genre_id,
-            user_id: user.id, // assuming user is logged in and user.id is available
+            user_id: user.id,
           };
         } else {
-          // If a city is selected from the dropdown
+          // if a city is selected from the dropdown
           body = {
             name: values.name,
             image: values.image,
-            city_id: values.city_id, // Existing city id
+            city_id: values.city_id,
             genre_id: values.genre_id,
-            user_id: user.id, // assuming user is logged in and user.id is available
+            user_id: user.id,
           };
         }
 
-        console.log("Body to send to server:", body); // Log body before sending
+        console.log("Body to send to server:", body);
 
-        // Send request to backend to create artist
+        // send request to backend to create artist
         const response = await fetch("/artists", {
           method: "POST",
           headers: {
@@ -106,91 +94,32 @@ const CreateArtist = () => {
         // const newArtist = await response.json();
         // alert("Artist created successfully!");
 
-        // Show success notification
-        setShowSuccess(true); // Trigger success state
+        setShowSuccess(true); // trigger success state
 
         setArtists((prevArtists) => [...prevArtists, newArtist]);
 
         formik.resetForm();
 
-        // Hide success message after 3 seconds
+        // hide  message after 3 seconds
         setTimeout(() => {
-          setShowSuccess(false); // Hide success message
+          setShowSuccess(false);
         }, 3000);
       } catch (error) {
         console.error("Error creating artist:", error);
         alert("There was an error creating the artist.");
       }
     },
-
-    // onSubmit: async (values) => {
-    //   console.log("Formik is valid:", formik.isValid); // Logs whether the form is valid
-    //   console.log("Formik errors:", formik.errors); // Logs any validation errors
-
-    //   if (!formik.isValid) {
-    //     console.error("Form is invalid. Check errors above.");
-    //     return; // Prevent form submission if invalid
-    //   }
-    //   console.log("Formik values at submission:", values);
-
-    //   try {
-    //     let body;
-    //     if (values.city_id == 0) {
-    //       body = {
-    //         name: values.name,
-    //         image: values.image,
-    //         // city_id: values.city_id,
-    //         city_name: values.city_name,
-    //         city_location: values.city_location,
-    //         genre_id: values.genre_id,
-    //       };
-    //     } else {
-    //       body = {
-    //         name: values.name,
-    //         image: values.image,
-    //         city_id: values.city_id,
-    //         // city_name: values.city_name,
-    //         // city_location: values.city_location,
-    //         genre_id: values.genre_id,
-    //       };
-    //     }
-    //     console.log("Body to send to server:", body); // Log body before sending
-
-    //     const response = await fetch("/artists", {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify(body),
-    //     });
-
-    //     if (!response.ok) {
-    //       throw new Error("Failed to create artist");
-    //     }
-
-    //     const newArtist = await response.json();
-    //     alert("Artist created successfully!");
-
-    //     setArtists((prevArtists) => [...prevArtists, newArtist]);
-
-    //     formik.resetForm();
-    //   } catch (error) {
-    //     console.error("Error creating artist:", error);
-    //     alert("There was an error creating the artist.");
-    //   }
-    // },
   });
   useEffect(() => {
     console.log("Formik is valid:", formik.isValid);
     console.log("Formik errors:", formik.errors);
-  }, [formik.values]); // Only trigger when form values change
+  }, [formik.values]); //  triggers when form values change
   useEffect(() => {
-    console.log("Formik initial values:", formik.values); // Log initial values
-  }, [formik.values]); // Runs whenever formik values change
+    console.log("Formik initial values:", formik.values);
+  }, [formik.values]); //  when formik values change
 
   return (
     <div>
-      {/* Form for creating an artist */}
       <form onSubmit={formik.handleSubmit}>
         <div>
           <label htmlFor="name">Artist Name:</label>
@@ -230,8 +159,7 @@ const CreateArtist = () => {
             ))}
           </select>
         </div>
-
-        {/* If no city is selected, show fields for creating a new city */}
+        {/* if no city is selected show fields for adding a new city / location */}
         {!formik.values.city_id && (
           <div>
             <label htmlFor="city_name">New City Name:</label>
@@ -274,7 +202,7 @@ const CreateArtist = () => {
         <button type="submit">Create Artist</button>
       </form>
 
-      {/* Success notification */}
+      {/* success notification */}
       {showSuccess && (
         <div className="success-message">
           <span>✔️</span> Artist created successfully!
@@ -295,3 +223,60 @@ export default CreateArtist;
 //   city_location: values.city_location,
 //   genre_id: values.genre_id,
 // };
+
+// onSubmit: async (values) => {
+//   console.log("Formik is valid:", formik.isValid); // Logs whether the form is valid
+//   console.log("Formik errors:", formik.errors); // Logs any validation errors
+
+//   if (!formik.isValid) {
+//     console.error("Form is invalid. Check errors above.");
+//     return; // Prevent form submission if invalid
+//   }
+//   console.log("Formik values at submission:", values);
+
+//   try {
+//     let body;
+//     if (values.city_id == 0) {
+//       body = {
+//         name: values.name,
+//         image: values.image,
+//         // city_id: values.city_id,
+//         city_name: values.city_name,
+//         city_location: values.city_location,
+//         genre_id: values.genre_id,
+//       };
+//     } else {
+//       body = {
+//         name: values.name,
+//         image: values.image,
+//         city_id: values.city_id,
+//         // city_name: values.city_name,
+//         // city_location: values.city_location,
+//         genre_id: values.genre_id,
+//       };
+//     }
+//     console.log("Body to send to server:", body); // Log body before sending
+
+//     const response = await fetch("/artists", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify(body),
+//     });
+
+//     if (!response.ok) {
+//       throw new Error("Failed to create artist");
+//     }
+
+//     const newArtist = await response.json();
+//     alert("Artist created successfully!");
+
+//     setArtists((prevArtists) => [...prevArtists, newArtist]);
+
+//     formik.resetForm();
+//   } catch (error) {
+//     console.error("Error creating artist:", error);
+//     alert("There was an error creating the artist.");
+//   }
+// },

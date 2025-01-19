@@ -1,9 +1,22 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { MyContext } from "./AppContext";
 
 function UserGenres() {
-  const { user, genre, artists, setArtists, selectedGenre, setSelectedGenre } =
+  const { user, artists, setArtists, selectedGenre, setSelectedGenre } =
     useContext(MyContext);
+
+  useEffect(() => {
+    // Clear artists and selected genre when the component mounts
+    console.log("Resetting artists and selectedGenre.");
+    setArtists([]); // Clear the artists state
+    setSelectedGenre(null); // Clear the selected genre
+
+    // Cleanup function to reset when the component unmounts
+    return () => {
+      setArtists([]);
+      setSelectedGenre(null);
+    };
+  }, []);
 
   const handleGenreClick = async (genre) => {
     if (!genre || !genre.id) {
@@ -19,10 +32,10 @@ function UserGenres() {
     const data = await response.json();
     console.log("Full response:", data);
 
-    // Instead of checking data.artists, set artists directly from data
+    // instead of checking data.artists, set artists directly from data
     if (Array.isArray(data.artists)) {
-      console.log("Setting artists:", data.artists); // Log artists being set
-      setArtists(data.artists); // Directly set the array to artists state
+      console.log("Setting artists:", data.artists); // log artists being set
+      setArtists(data.artists); // directly set the array to artists state
     } else {
       console.error("Artists data not found or is not an array:", data.artists);
     }

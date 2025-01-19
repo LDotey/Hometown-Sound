@@ -57,6 +57,7 @@
   width: 100%; /* Make the container take up the full width */
 }
 
+/* Button styling for toggle buttons */
 .profile-buttons button {
   cursor: pointer;
   color: white;
@@ -84,13 +85,14 @@
 .form-section {
   margin-top: 20px;
 }
+/* Hide sections by default */
 .section {
-  opacity: 0;
-  transition: opacity 0.5s ease-in-out;
+  display: none; /* Sections will be hidden by default */
 }
 
+/* Show sections when the .section-show class is applied */
 .section-show {
-  opacity: 1;
+  display: block;
 }
 .success-message {
   position: fixed;

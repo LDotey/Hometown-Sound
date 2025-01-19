@@ -1,9 +1,24 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { MyContext } from "./AppContext";
 
 function UserCities() {
-  const { user, city, artists, setArtists, selectedCity, setSelectedCity } =
+  const { user, artists, setArtists, selectedCity, setSelectedCity } =
     useContext(MyContext);
+  console.log("Rendering UserCities with user data:", user); // Debug log
+  console.log("User cities in UserCities:", user.cities); // Debug log
+
+  useEffect(() => {
+    // Clear artists and selected genre when the component mounts
+    console.log("Resetting artists and selectedCity.");
+    setArtists([]);
+    setSelectedCity(null);
+
+    // Cleanup function to reset when the component unmounts
+    return () => {
+      setArtists([]);
+      setSelectedCity(null);
+    };
+  }, []);
 
   const handleCityClick = async (city) => {
     if (!city || !city.id) {
@@ -27,6 +42,9 @@ function UserCities() {
       console.error("Artists data not found or is not an array:", data.artists);
     }
   };
+  useEffect(() => {
+    console.log("Rendering UserCities component");
+  }, []);
 
   return (
     <div>
@@ -57,15 +75,6 @@ function UserCities() {
           </ul>
         </div>
       )}
-
-      {/* <h2>Genres:</h2>
-      <ul>
-        {user.genres ? (
-          user.genres.map((genre) => <li key={genre.id}>{genre.name}</li>)
-        ) : (
-          <p>No genres associated with your profile.</p>
-        )}
-      </ul> */}
     </div>
   );
 }

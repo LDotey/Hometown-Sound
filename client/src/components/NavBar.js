@@ -14,7 +14,7 @@ function NavBar() {
         </NavLink>
       ) : (
         <NavLink to="/login" activeclassname="active">
-          Login
+          Sign In
         </NavLink>
       )}
       <NavLink to="/genres" activeclassname="active">
