@@ -8,6 +8,7 @@ const MyProvider = ({ children }) => {
     genres: [],
     userFetchedFlag: false,
   });
+  const [users, setUsers] = useState([]);
 
   const [cities, setCities] = useState([]);
   const [genres, setGenres] = useState([]);
@@ -90,6 +91,8 @@ const MyProvider = ({ children }) => {
       value={{
         user,
         setUser,
+        users,
+        setUsers,
         cities,
         setCities,
         genres,

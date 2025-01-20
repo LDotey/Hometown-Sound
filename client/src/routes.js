@@ -3,6 +3,7 @@ import App from "./components/App";
 import CreateLogin from "./components/LoginForm";
 import UserProfile from "./components/UserProfile";
 import AllGenres from "./components/GenresPage";
+import SignUp from "./components/SignUpForm";
 
 const routes = [
   {
@@ -12,6 +13,10 @@ const routes = [
       {
         path: "/login",
         element: <CreateLogin />,
+      },
+      {
+        path: "/users/signup",
+        element: <SignUp />,
       },
       {
         path: "/profile",

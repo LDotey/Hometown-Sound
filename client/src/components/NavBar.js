@@ -7,6 +7,10 @@ function NavBar() {
 
   return (
     <nav className="navbar">
+      <NavLink to="/users/signup" activeclassname="active">
+        Sign Up
+      </NavLink>
+
       {/* Conditionally render Login or Profile link based on authentication */}
       {isAuthenticated ? (
         <NavLink to="/profile" activeclassname="active">

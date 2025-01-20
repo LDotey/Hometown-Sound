@@ -8,7 +8,7 @@ from flask_restful import Resource
 from flask_login import current_user, login_user, logout_user, login_required, login_remembered
 
 # Local imports
-from config import app, db, api, login_manager
+from config import app, db, api, login_manager, bcrypt
 from flask_cors import CORS
  
 # Add your model imports
@@ -35,10 +35,17 @@ class Users(Resource):
     
     def post(self):
         data = request.get_json()
+        if not data:
+            print("No data received")
+            return {"message": "No data received"}, 400
 
+         # Hash the password using bcrypt
+        hashed_password = bcrypt.generate_password_hash(data["password"]).decode('utf-8')
+
+        # Create new user instance with hashed password
         new_user = User(
-            username = data["username"],
-            password = data["password"]
+            username=data["username"],
+            _password_hash=hashed_password  # Store the hashed password
         )
         db.session.add(new_user)
         db.session.commit()
@@ -243,7 +250,7 @@ class GenresByCity(Resource):
 
             
 
-api.add_resource(Users, '/users')
+api.add_resource(Users, '/users', '/users/signup')
 api.add_resource(Cities, '/cities')
 api.add_resource(Genres, '/genres')
 api.add_resource(Artists, '/artists')
