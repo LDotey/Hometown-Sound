@@ -43,7 +43,7 @@ function UserGenres() {
 
   return (
     <div>
-      <h2>Genres:</h2>
+      {/* <h2>Genres:</h2> */}
       <ul>
         {user.genres && user.genres.length > 0 ? (
           user.genres.map((genre) => (

@@ -16,6 +16,7 @@ const MyProvider = ({ children }) => {
   const [artists, setArtists] = useState([]);
   const [selectedCity, setSelectedCity] = useState(null);
   const [selectedGenre, setSelectedGenre] = useState(null);
+  const [selectedArtist, setSelectedArtist] = useState(null);
 
   // Check if user is logged in after the component mounts
   useEffect(() => {
@@ -99,6 +100,8 @@ const MyProvider = ({ children }) => {
         setGenres,
         artists,
         setArtists,
+        selectedArtist,
+        setSelectedArtist,
         selectedCity,
         setSelectedCity,
         selectedGenre,

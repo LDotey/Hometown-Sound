@@ -1,22 +1,32 @@
 import React, { useContext, useEffect } from "react";
 import { MyContext } from "./AppContext";
+import ArtistCard from "./ArtistCard";
 
 function UserCities() {
-  const { user, artists, setArtists, selectedCity, setSelectedCity } =
-    useContext(MyContext);
+  const {
+    user,
+    artists,
+    setArtists,
+    selectedCity,
+    setSelectedCity,
+    selectedArtist,
+    setSelectedArtist,
+  } = useContext(MyContext);
   console.log("Rendering UserCities with user data:", user); // Debug log
   console.log("User cities in UserCities:", user.cities); // Debug log
 
   useEffect(() => {
-    // Clear artists and selected genre when the component mounts
+    // clear artists and selected genre when the component mounts
     console.log("Resetting artists and selectedCity.");
     setArtists([]);
     setSelectedCity(null);
+    setSelectedArtist(null);
 
-    // Cleanup function to reset when the component unmounts
+    // cleanup function to reset when the component unmounts
     return () => {
       setArtists([]);
       setSelectedCity(null);
+      setSelectedArtist(null);
     };
   }, []);
 
@@ -28,6 +38,7 @@ function UserCities() {
     console.log(city.id);
     console.log(user.id);
     setSelectedCity(city.id);
+    setSelectedArtist(null);
 
     // Fetch artists for the selected city
     const response = await fetch(`/artists/user/${user.id}/city/${city.id}`);
@@ -46,33 +57,52 @@ function UserCities() {
     console.log("Rendering UserCities component");
   }, []);
 
+  const handleArtistClick = (artist) => {
+    // Update the global selectedArtist state when an artist is clicked
+    setSelectedArtist(artist);
+  };
+
   return (
-    <div>
-      {/* <h2>Cities:</h2> */}
-      <ul>
-        {user.cities && user.cities.length > 0 ? (
-          user.cities.map((city) => (
-            <li key={city.id} onClick={() => handleCityClick(city)}>
-              {city.name}
-            </li>
-          ))
-        ) : (
-          <p>No cities associated with your profile.</p>
+    <div className="user-cities-container">
+      <div className="cities-list">
+        {/* <h2>Cities:</h2> */}
+        <ul>
+          {user.cities && user.cities.length > 0 ? (
+            user.cities.map((city) => (
+              <li key={city.id} onClick={() => handleCityClick(city)}>
+                {city.name}
+              </li>
+            ))
+          ) : (
+            <p>No cities associated with your profile.</p>
+          )}
+        </ul>
+        {selectedCity && (
+          <div>
+            <h3>
+              Artists in{" "}
+              {user.cities.find((city) => city.id === selectedCity)?.name}:
+            </h3>
+            <ul>
+              {artists && artists.length > 0 ? (
+                artists.map((artist) => (
+                  <li key={artist.id} onClick={() => handleArtistClick(artist)}>
+                    {artist.name}
+                  </li>
+                ))
+              ) : (
+                <p>No artists found for this city.</p>
+              )}
+            </ul>
+          </div>
         )}
-      </ul>
-      {selectedCity && (
-        <div>
-          <h3>
-            Artists in{" "}
-            {user.cities.find((city) => city.id === selectedCity)?.name}:
-          </h3>
-          <ul>
-            {artists && artists.length > 0 ? (
-              artists.map((artist) => <li key={artist.id}>{artist.name}</li>)
-            ) : (
-              <p>No artists found for this city.</p>
-            )}
-          </ul>
+        {/* {selectedArtist && <ArtistCard artist={selectedArtist} />}{" "} */}
+        {/* Render ArtistCard from context */}
+      </div>
+      {/* Artist Card */}
+      {selectedCity && artists.length > 0 && (
+        <div className="artist-card-container">
+          <ArtistCard artist={selectedArtist} />
         </div>
       )}
     </div>

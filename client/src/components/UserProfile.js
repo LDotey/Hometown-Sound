@@ -122,6 +122,8 @@ function UserProfile() {
 
           <button onClick={handleLogout}>Logout</button>
         </div>
+        <hr />
+        <br />
 
         {/* Conditionally render sections below */}
         {showCreateForm && (
@@ -133,7 +135,7 @@ function UserProfile() {
         {/* Conditionally render Cities section */}
         {viewCities && (
           <div className={`section ${viewCities ? "section-show" : ""}`}>
-            <h2>Select a City</h2>
+            <h3>Select a City</h3>
             <UserCities />
           </div>
         )}
@@ -141,7 +143,7 @@ function UserProfile() {
         {/* Conditionally render Genres section */}
         {viewGenres && (
           <div className={`section ${viewGenres ? "section-show" : ""}`}>
-            <h2>Select a Genre</h2>
+            <h3>Select a Genre</h3>
             <UserGenres />
           </div>
         )}
