@@ -19,6 +19,7 @@ const MyProvider = ({ children }) => {
   const [selectedArtist, setSelectedArtist] = useState(null);
 
   // Check if user is logged in after the component mounts
+  //'/current_user'
   useEffect(() => {
     fetch("/current_user", {
       method: "GET",
@@ -69,23 +70,83 @@ const MyProvider = ({ children }) => {
         setIsAuthenticated(false);
       });
   }, []);
+
   useEffect(() => {
     console.log(user); // Check if cities and genres are in the user state
   }, [user]);
 
+  // '/cities'
   useEffect(() => {
     fetch("/cities")
       .then((response) => response.json())
       .then((data) => setCities(data))
       .catch((err) => console.error("Error fetching cities:", err));
   }, []);
-
+  // '/genres'
   useEffect(() => {
     fetch("/genres")
       .then((response) => response.json())
       .then((data) => setGenres(data))
       .catch((err) => console.error("Error fetching genres:", err));
   }, []);
+
+  const updateArtist = (id, updatedArtistData) => {
+    fetch(`/artists/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedArtistData),
+    })
+      .then((response) => response.json())
+      .then((updatedArtist) => {
+        const updatedUser = users.find(
+          (user) => user.id === updatedArtist.user_id
+        );
+        const updatedArtists = updatedUser.artists.map((artist) =>
+          artist.id === updatedArtist.id ? updatedArtist : artist
+        );
+        updatedUser.artists = updatedArtists;
+        const updatedUsers = users.map((user) =>
+          user.id === updatedArtist.user_id ? updatedUser : user
+        );
+        setUsers(updatedUsers);
+        setArtists(updatedArtists);
+      })
+      .catch((error) => {
+        console.error("Error updating artist:", error);
+      });
+  };
+
+  const deleteArtist = (id) => {
+    fetch(`/artists/${id}`, {
+      method: "DELETE",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("deleted artist response:", data);
+
+        if (data.message === "Artist deleted successfully") {
+          const updatedUsers = users.map((user) => {
+            if (user.id === data.user_id) {
+              // filter out the deleted artist from the user's artists array
+              user.artists = user.artists.filter((artist) => artist.id !== id);
+            }
+            return users;
+          });
+          console.log("updated Users after deleting artist:", updatedUsers);
+          setUsers(updatedUsers);
+
+          const updatedArtists = artists.filter((artist) => artist.id !== id);
+          setArtists(updatedArtists);
+        } else {
+          console.error("failed to delete artist:", data);
+        }
+      })
+      .catch((error) => {
+        console.error("Error deleting artist:", error);
+      });
+  };
 
   return (
     <MyContext.Provider
@@ -108,6 +169,8 @@ const MyProvider = ({ children }) => {
         setSelectedGenre,
         isAuthenticated,
         setIsAuthenticated,
+        updateArtist,
+        deleteArtist,
       }}
     >
       {children}

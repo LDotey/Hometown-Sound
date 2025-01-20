@@ -114,6 +114,32 @@ class Artists(Resource):
         db.session.commit()
 
         return {"message": "Artist created successfully"}, 201
+    
+    def patch(self, id):
+        data= request.get_json()
+        artist = Artist.query.get(id)
+        if not artist:
+            return {"error": "Artist not found"}, 404
+        
+        artist.name = data.get("name", artist.name)
+        artist.image = data.get("image", artist.image)
+        artist.user_id = data.get("user_id", artist.user_id)
+        artist.city_id = data.get("city_id", artist.city_id)
+        artist.genre_id = data.get("genre_id", artist.genre_id)
+
+        db.session.commit()
+
+        return artist.to_dict(), 200
+    
+    def delete(self, id):
+        artist = Artist.query.get(id)
+        if not artist:
+            return {"error": "Artist not found"}, 404
+        
+        db.session.delete(artist)
+        db.session.commit()
+
+        return {"message": "Artist deleted successfully", "id": id}
         
 class ArtistsByCity(Resource):
     def get(self, user_id, city_id):
