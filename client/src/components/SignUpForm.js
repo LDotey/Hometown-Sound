@@ -27,7 +27,7 @@ function SignUp() {
 
     validationSchema: formSchema,
     onSubmit: (values) => {
-      fetch("/users/signup", {
+      fetch("/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

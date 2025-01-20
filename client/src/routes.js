@@ -15,7 +15,7 @@ const routes = [
         element: <CreateLogin />,
       },
       {
-        path: "/users/signup",
+        path: "/signup",
         element: <SignUp />,
       },
       {

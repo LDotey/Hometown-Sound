@@ -250,7 +250,7 @@ class GenresByCity(Resource):
 
             
 
-api.add_resource(Users, '/users', '/users/signup')
+api.add_resource(Users, '/users', '/signup')
 api.add_resource(Cities, '/cities')
 api.add_resource(Genres, '/genres')
 api.add_resource(Artists, '/artists')

@@ -7,7 +7,7 @@ function NavBar() {
 
   return (
     <nav className="navbar">
-      <NavLink to="/users/signup" activeclassname="active">
+      <NavLink to="/signup" activeclassname="active">
         Sign Up
       </NavLink>
 
