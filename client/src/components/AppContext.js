@@ -18,6 +18,15 @@ const MyProvider = ({ children }) => {
   const [selectedGenre, setSelectedGenre] = useState(null);
   const [selectedArtist, setSelectedArtist] = useState(null);
 
+  const generateRandomColor = () => {
+    const letters = "0123456789ABCDEF";
+    let color = "#";
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  };
+
   // check if user is logged in after the component mounts
   //'/current_user'
   useEffect(() => {
@@ -149,11 +158,13 @@ const MyProvider = ({ children }) => {
   };
 
   const addArtist = (newArtist) => {
+    debugger;
     let cityOfNewArtist = user.cities.find((c) => c.id === newArtist.city_id);
 
     // if (!cityOfNewArtist) {
     //   cityOfNewArtist = cities.find((c) => c.id === newArtist.city_id);
     if (!cityOfNewArtist) {
+      // debugger;
       console.log("Creating new city for artist:", newArtist.city);
       cityOfNewArtist = {
         id: newArtist.city_id,
@@ -163,30 +174,25 @@ const MyProvider = ({ children }) => {
       };
 
       // add new city to all cities
-      cities.push(cityOfNewArtist);
+      cities.push(newArtist.city);
       user.cities.push(cityOfNewArtist);
     }
-    // if (cityOfNewArtist) {
-    //   user.cities.push(cityOfNewArtist);
-    // }
 
     let genreOfNewArtist = user.genres.find((g) => g.id === newArtist.genre_id);
 
     if (!genreOfNewArtist) {
+      // debugger;
       console.log("Creating new genre for artist:", newArtist.genre);
       genreOfNewArtist = {
         id: newArtist.genre_id,
         name: newArtist.genre.name,
-        color: newArtist.genre.color,
+        color: generateRandomColor(),
         artists: [],
       };
       // add new genre to ALL genres
-      genres.push(genreOfNewArtist);
+      genres.push(newArtist.genre);
       user.genres.push(genreOfNewArtist);
     }
-    // if (genreOfNewArtist) {
-    //   user.genres.push(genreOfNewArtist);
-    // }
 
     const updatedArtists = [
       ...cityOfNewArtist.artists,

@@ -16,12 +16,21 @@ const CreateArtist = () => {
       .required("User ID is required")
       .positive("User ID must be a positive number")
       .integer("User ID must be an integer"),
-    genre_id: yup
-      .number()
-      .required("Genre ID is required")
-      .positive("Genre ID must be a positive number")
-      .integer("Genre ID must be an integer"),
-    city_id: yup.number(),
+
+    // genre_id is always required
+    genre_id: yup.string(),
+    // .required("Genre ID is required")
+    // .positive("Genre ID must be a positive number")
+    // .integer("Genre ID must be an integer"),
+
+    // genre_name is only required when genre_id is empty (for creating a new genre)
+    genre_name: yup.string(),
+    // .when("genre_id", {
+    //   is: (genre_id) => !genre_id, // if no genre_id, then genre_name must be filled in
+    //   then: yup.string().required("Genre name is required for new genre"),
+    //   otherwise: yup.string().notRequired(),
+    // }),
+    city_id: yup.string(),
     city_name: yup.string(),
     city_location: yup.string(),
   });
@@ -30,10 +39,11 @@ const CreateArtist = () => {
     initialValues: {
       name: "",
       image: "",
-      city_id: 0,
+      city_id: "",
       city_name: "",
       city_location: "",
       genre_id: "",
+      genre_name: "",
       user_id: user.id,
     },
 
@@ -41,6 +51,11 @@ const CreateArtist = () => {
     validateOnChange: true,
     validateOnBlur: true,
     onSubmit: async (values) => {
+      console.log("I've been clicked");
+      if (!values.genre_id && !values.genre_name) {
+        alert("Please select an existing genre or create a new genre.");
+        return;
+      }
       console.log("Formik is valid:", formik.isValid);
       console.log("Formik errors:", formik.errors);
 
@@ -53,7 +68,7 @@ const CreateArtist = () => {
       try {
         let body;
 
-        if (values.city_id === 0) {
+        if (values.city_id === "") {
           // if no city is selected (new city is being created)
           body = {
             name: values.name,
@@ -61,6 +76,7 @@ const CreateArtist = () => {
             city_name: values.city_name,
             city_location: values.city_location,
             genre_id: values.genre_id,
+            genre_name: values.genre_name,
             user_id: user.id,
           };
         } else {
@@ -70,8 +86,16 @@ const CreateArtist = () => {
             image: values.image,
             city_id: values.city_id,
             genre_id: values.genre_id,
+            genre_name: values.genre_name,
             user_id: user.id,
           };
+        }
+        if (values.genre_id === "") {
+          // if no genre is selected create a new genre
+          body.genre_name = values.genre_name;
+        } else {
+          // if an existing genre is selected use the genre_id
+          body.genre_id = values.genre_id;
         }
 
         console.log("Body to send to server:", body);
@@ -150,8 +174,8 @@ const CreateArtist = () => {
             value={formik.values.city_id}
           >
             <option value="">Select a City</option>
-            {cities.map((city) => (
-              <option key={city.id} value={city.id}>
+            {cities.map((city, index) => (
+              <option key={`${city.id}-${index}`} value={city.id}>
                 {city.name}
               </option>
             ))}
@@ -193,12 +217,36 @@ const CreateArtist = () => {
             value={formik.values.genre_id}
           >
             <option value="">Select a Genre</option>
-            {genres.map((genre) => (
-              <option key={genre.id} value={genre.id}>
+            {genres.map((genre, index) => (
+              <option key={`${genre.id}-${index}`} value={genre.id}>
                 {genre.name}
               </option>
             ))}
           </select>
+          {formik.errors.genre_id && formik.touched.genre_id && (
+            <div className="error">{formik.errors.genre_id}</div>
+          )}
+        </div>
+        <div>
+          <h5>OR</h5>
+        </div>
+        <div>
+          {!formik.values.genre_id && (
+            <div>
+              <label htmlFor="genre_name">New Genre Name:</label>
+              <input
+                id="genre_name"
+                name="genre_name"
+                type="text"
+                onChange={formik.handleChange}
+                value={formik.values.genre_name}
+              />
+              {formik.errors.genre_name && formik.touched.genre_name && (
+                <div className="error">{formik.errors.genre_name}</div>
+              )}
+            </div>
+          )}
+          <br />
         </div>
         <br />
 

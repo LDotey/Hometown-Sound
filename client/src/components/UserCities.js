@@ -52,38 +52,13 @@ function UserCities() {
     } else {
       console.error("artist data for city is not an array", cityArtists);
     }
-
     setLoading(false);
-
-    // // Fetch artists for the selected city
-    // const response = await fetch(`/artists/user/${user.id}/city/${city.id}`);
-    // const data = await response.json();
-    // console.log("Full response:", data);
-    //   const artistsInCity = user.artists.filter(
-    //     (artist) => artist.city_id === city.id
-    //   );
-    //   console.log("artists in seleccted city:", artistsInCity);
-
-    //   if (Array.isArray(artistsInCity)) {
-    //     setArtists(artistsInCity);
-    //   } else {
-    //     console.error("artists data not found or is not an array", artistsInCity);
-    //   }
-    // };
-    //   // Instead of checking data.artists, set artists directly from data
-    //   if (Array.isArray(data.artists)) {
-    //     console.log("Setting artists:", data.artists); // Log artists being set
-    //     setArtists(data.artists); // Directly set the array to artists state
-    //   } else {
-    //     console.error("Artists data not found or is not an array:", data.artists);
-    //   }
-    // };
-    // useEffect(() => {
-    //   console.log("Rendering UserCities component");
-    // }, []);
   };
+
   const handleArtistClick = (artist) => {
-    // Update the global selectedArtist state when an artist is clicked
+    console.log("Artist clicked:", artist); // Debug log
+
+    // update  state when an artist is clicked
     setSelectedArtist(artist);
   };
 
@@ -162,3 +137,30 @@ export default UserCities;
 // }
 
 // export default CityArtists;
+
+// // Fetch artists for the selected city
+// const response = await fetch(`/artists/user/${user.id}/city/${city.id}`);
+// const data = await response.json();
+// console.log("Full response:", data);
+//   const artistsInCity = user.artists.filter(
+//     (artist) => artist.city_id === city.id
+//   );
+//   console.log("artists in seleccted city:", artistsInCity);
+
+//   if (Array.isArray(artistsInCity)) {
+//     setArtists(artistsInCity);
+//   } else {
+//     console.error("artists data not found or is not an array", artistsInCity);
+//   }
+// };
+//   // Instead of checking data.artists, set artists directly from data
+//   if (Array.isArray(data.artists)) {
+//     console.log("Setting artists:", data.artists); // Log artists being set
+//     setArtists(data.artists); // Directly set the array to artists state
+//   } else {
+//     console.error("Artists data not found or is not an array:", data.artists);
+//   }
+// };
+// useEffect(() => {
+//   console.log("Rendering UserCities component");
+// }, []);

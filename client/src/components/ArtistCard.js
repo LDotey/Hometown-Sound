@@ -1,9 +1,9 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { MyContext } from "./AppContext";
 import { useFormik } from "formik";
 
 function ArtistCard({ artist }) {
-  const { updateArtist, deleteArtist } = useContext(MyContext);
+  const { cities, updateArtist, deleteArtist } = useContext(MyContext);
   const [isEditing, setIsEditing] = useState(false);
   console.log(artist);
 
@@ -12,14 +12,20 @@ function ArtistCard({ artist }) {
 
   const formik = useFormik({
     initialValues: {
-      name: artist.name,
-      image: artist.image,
-      genre: artist.genre.name,
-      location: artist.city.name,
+      name: "",
+      image: "",
+      genre: "",
+      location: "",
     },
     enableReinitialize: true,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       console.log("Values:", values);
+      // lookup city name using values.location (which will be the city_id)
+      const city = cities.find((c) => c.id === values.location);
+      const cityName = city ? city.name : ""; // default to empty string if not found
+
+      // You can then send this value to your server or use it in your logic
+      console.log("Selected city name:", cityName);
 
       // only update if the values are different than initial values
       if (
@@ -34,6 +40,18 @@ function ArtistCard({ artist }) {
       setIsEditing(false);
     },
   });
+
+  // Update Formik initial values when the selected artist changes
+  useEffect(() => {
+    if (artist) {
+      formik.setValues({
+        name: artist.name,
+        image: artist.image,
+        genre: artist.genre, // Handling genre
+        location: cities.find((city) => city.id === artist.city_id)?.name || "", // Handling location
+      });
+    }
+  }, [artist, cities]);
 
   const handleEditClick = () => {
     setIsEditing(!isEditing);
@@ -75,7 +93,7 @@ function ArtistCard({ artist }) {
           onChange={formik.handleChange}
         />
       ) : (
-        <p>Genre: {artist.genre.name}</p>
+        <p>Genre: {artist.genre}</p>
       )}
       {isEditing ? (
         <input
@@ -85,7 +103,13 @@ function ArtistCard({ artist }) {
           onChange={formik.handleChange}
         />
       ) : (
-        <p>Location: {artist.city.name}</p>
+        <p>
+          Location:{" "}
+          {artist.city_id
+            ? cities.find((city) => city.id === artist.city_id)?.name ||
+              "City not found"
+            : "City not assigned"}
+        </p>
       )}
       <button onClick={handleEditClick}>
         {isEditing ? "Cancel" : "Edit this Artist"}

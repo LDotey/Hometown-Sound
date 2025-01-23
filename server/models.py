@@ -77,7 +77,7 @@ class Genre(db.Model, SerializerMixin):
 
 class Artist(db.Model, SerializerMixin):
     __tablename__ = "artists"
-    serialize_rules = ('-user.artists', '-city.artists', '-genre.artists', '-user_id', '-city', )
+    serialize_rules = ('-user.artists', '-city.artists', '-genre.artists', '-user_id', )
 
 
     id = db.Column(db.Integer, primary_key=True)

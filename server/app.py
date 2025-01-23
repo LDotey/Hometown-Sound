@@ -92,15 +92,27 @@ class Artists(Resource):
         city_name = data.get("city_name")
         city_location = data.get("city_location")
         city_id = data.get("city_id")
+        genre_id = data.get("genre_id")
+        genre_name = data.get("genre_name")
+        genre_color = data.get("genre_color")
 
         # check if city_id is provided, if not, create a new city
         if not city_id and city_name and city_location:
             city = City.query.filter_by(name=city_name).first()
-            if not city:
+            if not city:                
                 city = City(name=city_name, location=city_location)
+                # breakpoint()
                 db.session.add(city)
                 db.session.commit()
             city_id = city.id  # use the ID of the new or existing city
+
+        if not genre_id and genre_name:
+            genre = Genre.query.filter_by(name=genre_name).first()
+            if not genre:
+                genre = Genre(name=genre_name, color=genre_color)
+                db.session.add(genre)
+                db.session.commit()
+            genre_id = genre.id
         
         # create the artist
         new_artist = Artist(
@@ -108,7 +120,7 @@ class Artists(Resource):
             image=data.get("image"),
             user_id=data.get("user_id"),
             city_id=city_id,
-            genre_id=data.get("genre_id"),
+            genre_id=genre_id,
         )
         
         db.session.add(new_artist)
