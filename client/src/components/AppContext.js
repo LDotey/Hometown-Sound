@@ -166,10 +166,9 @@ const MyProvider = ({ children }) => {
       cities.push(cityOfNewArtist);
       user.cities.push(cityOfNewArtist);
     }
-    // ADD city to users cities
-    if (cityOfNewArtist) {
-      user.cities.push(cityOfNewArtist);
-    }
+    // if (cityOfNewArtist) {
+    //   user.cities.push(cityOfNewArtist);
+    // }
 
     let genreOfNewArtist = user.genres.find((g) => g.id === newArtist.genre_id);
 
@@ -185,10 +184,9 @@ const MyProvider = ({ children }) => {
       genres.push(genreOfNewArtist);
       user.genres.push(genreOfNewArtist);
     }
-    // add genre to users genres
-    if (genreOfNewArtist) {
-      user.genres.push(genreOfNewArtist);
-    }
+    // if (genreOfNewArtist) {
+    //   user.genres.push(genreOfNewArtist);
+    // }
 
     const updatedArtists = [
       ...cityOfNewArtist.artists,
