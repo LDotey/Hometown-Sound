@@ -4,7 +4,8 @@ import * as yup from "yup";
 import { MyContext } from "./AppContext";
 
 const CreateArtist = () => {
-  const { cities, genres, user, artists, setArtists } = useContext(MyContext);
+  const { cities, genres, user, artists, setArtists, addArtist } =
+    useContext(MyContext);
   const [showSuccess, setShowSuccess] = useState(false);
 
   const formSchema = yup.object().shape({
@@ -91,16 +92,13 @@ const CreateArtist = () => {
         const newArtist = await response.json();
         console.log("Artist created:", newArtist);
 
-        // const newArtist = await response.json();
-        // alert("Artist created successfully!");
-
         setShowSuccess(true); // trigger success state
+        addArtist(newArtist);
 
         setArtists((prevArtists) => [...prevArtists, newArtist]);
 
         formik.resetForm();
 
-        // hide  message after 3 seconds
         setTimeout(() => {
           setShowSuccess(false);
         }, 3000);
@@ -110,13 +108,13 @@ const CreateArtist = () => {
       }
     },
   });
-  useEffect(() => {
-    console.log("Formik is valid:", formik.isValid);
-    console.log("Formik errors:", formik.errors);
-  }, [formik.values]); //  triggers when form values change
-  useEffect(() => {
-    console.log("Formik initial values:", formik.values);
-  }, [formik.values]); //  when formik values change
+  // useEffect(() => {
+  //   console.log("Formik is valid:", formik.isValid);
+  //   console.log("Formik errors:", formik.errors);
+  // }, [formik.values]); //  triggers when form values change
+  // useEffect(() => {
+  //   console.log("Formik initial values:", formik.values);
+  // }, [formik.values]); //  when formik values change
 
   return (
     <div>
@@ -131,7 +129,7 @@ const CreateArtist = () => {
             value={formik.values.name}
           />
         </div>
-
+        <br />
         <div>
           <label htmlFor="image">Artist Image URL:</label>
           <input
@@ -142,7 +140,7 @@ const CreateArtist = () => {
             value={formik.values.image}
           />
         </div>
-
+        <br />
         <div>
           <label htmlFor="city_id">City:</label>
           <select
@@ -158,6 +156,9 @@ const CreateArtist = () => {
               </option>
             ))}
           </select>
+        </div>
+        <div>
+          <h5>OR</h5>
         </div>
         {/* if no city is selected show fields for adding a new city / location */}
         {!formik.values.city_id && (
@@ -181,6 +182,7 @@ const CreateArtist = () => {
             />
           </div>
         )}
+        <br />
 
         <div>
           <label htmlFor="genre_id">Genre:</label>
@@ -198,6 +200,7 @@ const CreateArtist = () => {
             ))}
           </select>
         </div>
+        <br />
 
         <button type="submit">Create Artist</button>
       </form>

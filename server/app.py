@@ -6,6 +6,7 @@
 from flask import request, session
 from flask_restful import Resource
 from flask_login import current_user, login_user, logout_user, login_required, login_remembered
+from copy import copy, deepcopy
 
 # Local imports
 from config import app, db, api, login_manager, bcrypt
@@ -28,10 +29,10 @@ def index():
 
 class Users(Resource):
     
-    def get(self):
-        # breakpoint()
-        users = [user.to_dict() for user in User.query.all()]
-        return users, 200
+    # def get(self):
+    #     # breakpoint()
+    #     users = [user.to_dict() for user in User.query.all()]
+    #     return users, 200
     
     def post(self):
         data = request.get_json()
@@ -92,17 +93,17 @@ class Artists(Resource):
         city_location = data.get("city_location")
         city_id = data.get("city_id")
 
-        # Check if city_id is provided, if not, create a new city
+        # check if city_id is provided, if not, create a new city
         if not city_id and city_name and city_location:
             city = City.query.filter_by(name=city_name).first()
             if not city:
                 city = City(name=city_name, location=city_location)
                 db.session.add(city)
                 db.session.commit()
-            city_id = city.id  # Use the ID of the new or existing city
+            city_id = city.id  # use the ID of the new or existing city
         
-        # Create the artist
-        artist = Artist(
+        # create the artist
+        new_artist = Artist(
             name=data.get("name"),
             image=data.get("image"),
             user_id=data.get("user_id"),
@@ -110,10 +111,12 @@ class Artists(Resource):
             genre_id=data.get("genre_id"),
         )
         
-        db.session.add(artist)
+        db.session.add(new_artist)
         db.session.commit()
 
-        return {"message": "Artist created successfully"}, 201
+        return new_artist.to_dict(), 201
+
+        # return {"message": "Artist created successfully"}, 201
     
     def patch(self, id):
         data= request.get_json()
@@ -198,25 +201,95 @@ class Logout(Resource):
         logout_user()
         session.clear()
         return {'message': 'Logged out successfully'}, 200
-    
+
 class CurrentUser(Resource):
-    @login_required 
-
+    @login_required
     def get(self):
-        # if current_user:
-        #      logout_user()
-        # logout_user()
-        # breakpoint()
-        print("Session data:", session)  
-        print("Current user:", current_user)  
-        print("Is authenticated?", current_user.is_authenticated)  
-
-        if current_user.is_authenticated:
-            # breakpoint()
-            user_dict = current_user.to_dict()  
-            return user_dict, 200
-        else:
+        if not current_user.is_authenticated:
             return {'message': 'User not authenticated'}, 401
+
+        # init the response data structure
+        user_data = {
+            "id": current_user.id,
+            "username": current_user.username,
+            "cities": [],
+            "genres": []
+        }
+       
+        for city in current_user.cities:
+            artists_in_city = [
+                {"name": artist.name,
+                 "id": artist.id,
+                 "image": artist.image,
+                 "genre": artist.genre.name,
+                 "city_id": artist.city_id
+                 }
+
+                 for artist in city.artists if artist.user_id == current_user.id
+            ]
+            
+            # populate the resp. data structure with each city instance
+            # list of city objects (dictionaries)
+            user_data["cities"].append({
+                "id": city.id,
+                "name": city.name,
+                "location": city.location,
+                "artists": artists_in_city
+                # [artist.to_dict() for artist in artists_in_city]
+            })
+        
+        for genre in current_user.genres:
+            artists_in_genre = [
+                artist for artist in genre.artists if artist.user_id == current_user.id
+            ]
+            user_data["genres"].append({
+                "id": genre.id,
+                "name": genre.name,
+                "color": genre.color,
+                "artists": [artist.to_dict() for artist in artists_in_genre]
+            })
+
+        return user_data, 200
+    
+# class CurrentUser(Resource):
+#     @login_required 
+
+#     def get(self):
+#         # if current_user:
+#         #      logout_user()
+#         # logout_user()
+#         # breakpoint()
+#         print("Session data:", session)  
+#         print("Current user:", current_user)  
+#         print("Is authenticated?", current_user.is_authenticated)  
+
+#         if current_user.is_authenticated:
+#             user = {
+#                 id: current_user.id,
+#                 username: current_user.username,
+#                 _password_hash: current_user._password_hash
+#                 cities: []
+#             }
+
+#             # user = deepcopy(current_user)
+#             # adjArtists = []
+#             # cities = deepcopy(user.cities)
+#             for cit in current_user.cities:
+#                 append each cit in to fakeUser.cities
+#                 # artists = cit.artists
+#                 for art in cit.artists:
+#                 # breakpoint()
+#                     # if art.user_id == current_user.id:
+#                         # adjArtists.append(art)
+#                 adjArtists = [art for art in cit.artists if art.user_id == user.id]
+#                 # breakpoint()
+#                 cit.artists = adjArtists
+#             breakpoint()
+#             user_dict = user.to_dict()  
+#             return user_dict, 200
+#         else:
+#             return {'message': 'User not authenticated'}, 401
+        
         
 class CheckSession(Resource):
     def get(self):
@@ -279,7 +352,7 @@ class GenresByCity(Resource):
 api.add_resource(Users, '/users', '/signup')
 api.add_resource(Cities, '/cities')
 api.add_resource(Genres, '/genres')
-api.add_resource(Artists, '/artists')
+api.add_resource(Artists, '/artists', '/artists/<int:id>')
 api.add_resource(Login, '/login')
 api.add_resource(Logout, '/logout')
 api.add_resource(CurrentUser, '/current_user')

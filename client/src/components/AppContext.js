@@ -18,7 +18,7 @@ const MyProvider = ({ children }) => {
   const [selectedGenre, setSelectedGenre] = useState(null);
   const [selectedArtist, setSelectedArtist] = useState(null);
 
-  // Check if user is logged in after the component mounts
+  // check if user is logged in after the component mounts
   //'/current_user'
   useEffect(() => {
     fetch("/current_user", {
@@ -43,33 +43,33 @@ const MyProvider = ({ children }) => {
       });
   }, []);
 
-  useEffect(() => {
-    // Fetch the current logged-in user
-    fetch("/current_user", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Current User Data:", data);
+  // useEffect(() => {
+  //   // Fetch the current logged-in user
+  //   fetch("/current_user", {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     credentials: "include",
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       console.log("Current User Data:", data);
 
-        if (data) {
-          setUser({
-            ...data,
-            cities: data.cities || [],
-            genres: data.genres || [],
-          });
-          setIsAuthenticated(true);
-        }
-      })
-      .catch((err) => {
-        console.error("Error fetching current user:", err);
-        setIsAuthenticated(false);
-      });
-  }, []);
+  //       if (data) {
+  //         setUser({
+  //           ...data,
+  //           cities: data.cities || [],
+  //           genres: data.genres || [],
+  //         });
+  //         setIsAuthenticated(true);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.error("Error fetching current user:", err);
+  //       setIsAuthenticated(false);
+  //     });
+  // }, []);
 
   useEffect(() => {
     console.log(user); // Check if cities and genres are in the user state
@@ -148,9 +148,97 @@ const MyProvider = ({ children }) => {
       });
   };
 
+  const addArtist = (newArtist) => {
+    let cityOfNewArtist = user.cities.find((c) => c.id === newArtist.city_id);
+
+    // if (!cityOfNewArtist) {
+    //   cityOfNewArtist = cities.find((c) => c.id === newArtist.city_id);
+    if (!cityOfNewArtist) {
+      console.log("Creating new city for artist:", newArtist.city);
+      cityOfNewArtist = {
+        id: newArtist.city_id,
+        name: newArtist.city.name,
+        location: newArtist.city.location,
+        artists: [],
+      };
+
+      // add new city to all cities
+      cities.push(cityOfNewArtist);
+      user.cities.push(cityOfNewArtist);
+    }
+    // ADD city to users cities
+    if (cityOfNewArtist) {
+      user.cities.push(cityOfNewArtist);
+    }
+
+    let genreOfNewArtist = user.genres.find((g) => g.id === newArtist.genre_id);
+
+    if (!genreOfNewArtist) {
+      console.log("Creating new genre for artist:", newArtist.genre);
+      genreOfNewArtist = {
+        id: newArtist.genre_id,
+        name: newArtist.genre.name,
+        color: newArtist.genre.color,
+        artists: [],
+      };
+      // add new genre to ALL genres
+      genres.push(genreOfNewArtist);
+      user.genres.push(genreOfNewArtist);
+    }
+    // add genre to users genres
+    if (genreOfNewArtist) {
+      user.genres.push(genreOfNewArtist);
+    }
+
+    const updatedArtists = [
+      ...cityOfNewArtist.artists,
+      {
+        id: newArtist.id,
+        name: newArtist.name,
+        image: newArtist.image,
+        genre: newArtist.genre.name,
+        city_id: newArtist.city_id,
+        genre_id: newArtist.genre_id,
+      },
+    ];
+
+    const updatedUserCity = { ...cityOfNewArtist, artists: updatedArtists };
+    const updatedUserCities = user.cities.map((c) =>
+      c.id === updatedUserCity.id ? updatedUserCity : c
+    );
+    const updatedUserGenre = { ...genreOfNewArtist, artists: updatedArtists };
+    const updatedUserGenres = user.genres.map((g) =>
+      g.id === updatedUserGenre.id ? updatedUserGenre : g
+    );
+    // debugger;
+
+    setUser({
+      ...user,
+      cities: updatedUserCities,
+      genres: updatedUserGenres,
+    });
+
+    // // check if the genre already exists using filter
+    // const genreExists =
+    //   user.genres.filter((genre) => genre.id === newArtist.genre_id).length ===
+    //   0;
+    // if (genreExists) {
+    //   const artistGenre = genres.find(
+    //     (genre) => genre.id === newArtist.genre_id
+    //   );
+    //   user.genres = [...user.genres, artistGenre];
+    // }
+
+    // // add the new artist to the artists array
+    // user.artists = [...user.artists, newArtist];
+
+    // setUser(user);
+  };
+
   return (
     <MyContext.Provider
       value={{
+        addArtist,
         user,
         setUser,
         users,
@@ -178,25 +266,3 @@ const MyProvider = ({ children }) => {
   );
 };
 export { MyContext, MyProvider };
-
-// useEffect(() => {
-//   // Check if the user is authenticated when the app loads
-//   fetch("/current_user", {
-//     method: "GET",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     credentials: "include",
-//   })
-//     .then((response) => response.json())
-//     .then((data) => {
-//       if (data) {
-//         setUser(data);
-//         setIsAuthenticated(true);
-//       }
-//     })
-//     .catch((err) => {
-//       console.error("Error fetching current user:", err);
-//       setIsAuthenticated(false);
-//     });
-// }, []);
