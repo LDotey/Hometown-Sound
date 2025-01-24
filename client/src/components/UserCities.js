@@ -17,20 +17,21 @@ function UserCities() {
   // console.log("Rendering UserCities with user data:", user); // Debug log
   // console.log("User cities in UserCities:", user.cities); // Debug log
 
-  useEffect(() => {
-    // clear artists and selected genre when the component mounts
-    console.log("Resetting artists and selectedCity.");
-    setArtists([]);
-    setSelectedCity(null);
-    setSelectedArtist(null);
+  // ***** don't need this because now state is updatting correctly.??
+  // useEffect(() => {
+  //   // clear artists and selected genre when the component mounts
+  //   console.log("Resetting artists and selectedCity.");
+  //   setArtists([]);
+  //   setSelectedCity(null);
+  //   setSelectedArtist(null);
 
-    // cleanup function to reset when the component unmounts
-    return () => {
-      setArtists([]);
-      setSelectedCity(null);
-      setSelectedArtist(null);
-    };
-  }, []);
+  //   // cleanup function to reset when the component unmounts
+  //   return () => {
+  //     setArtists([]);
+  //     setSelectedCity(null);
+  //     setSelectedArtist(null);
+  //   };
+  // }, []);
 
   const handleCityClick = async (city) => {
     if (!city || !city.id) {

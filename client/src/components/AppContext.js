@@ -99,6 +99,8 @@ const MyProvider = ({ children }) => {
       .catch((err) => console.error("Error fetching genres:", err));
   }, []);
 
+  // *****************************************
+  // users is an empty array. initial values
   const updateArtist = (id, updatedArtistData) => {
     fetch(`/artists/${id}`, {
       method: "PATCH",
@@ -109,23 +111,173 @@ const MyProvider = ({ children }) => {
     })
       .then((response) => response.json())
       .then((updatedArtist) => {
-        const updatedUser = users.find(
-          (user) => user.id === updatedArtist.user_id
-        );
-        const updatedArtists = updatedUser.artists.map((artist) =>
+        // debugger;
+        console.log("Updated artist:", updatedArtist);
+        // });
+        // const updatedArtist = {
+        //   ...updatedArtistData,
+        // };
+
+        //  city and genre to update (check if they exist in the user's city/genre lists)
+        let cityToUpdate = {
+          ...user.cities.find((c) => c.id === updatedArtist.city_id),
+        };
+        let genreToUpdate = {
+          ...user.genres.find((g) => g.id === updatedArtist.genre_id),
+        };
+
+        if (cityToUpdate && !cityToUpdate.artists) {
+          cityToUpdate.artists = []; // initialize artists array
+        }
+
+        if (genreToUpdate && !genreToUpdate.artists) {
+          genreToUpdate.artists = []; // initialize artists array
+        }
+
+        // update the artists data in the city and genre
+        const updatedArtistsInCity = cityToUpdate.artists.map((artist) =>
           artist.id === updatedArtist.id ? updatedArtist : artist
         );
-        updatedUser.artists = updatedArtists;
-        const updatedUsers = users.map((user) =>
-          user.id === updatedArtist.user_id ? updatedUser : user
+
+        const updatedArtistsInGenre = genreToUpdate.artists.map((artist) =>
+          artist.id === updatedArtist.id ? updatedArtist : artist
         );
-        setUsers(updatedUsers);
-        setArtists(updatedArtists);
-      })
-      .catch((error) => {
-        console.error("Error updating artist:", error);
+
+        cityToUpdate = { ...cityToUpdate, artists: updatedArtistsInCity };
+        genreToUpdate = { ...genreToUpdate, artists: updatedArtistsInGenre };
+
+        // update the city and genre with the updated artist
+        // cityToUpdate.artists = updatedArtistsInCity;
+        // genreToUpdate.artists = updatedArtistsInGenre;
+
+        // update the user's cities and genres state
+        const updatedUserCities = user.cities.map((city) =>
+          city.id === cityToUpdate.id ? cityToUpdate : city
+        );
+
+        const updatedUserGenres = user.genres.map((genre) =>
+          genre.id === genreToUpdate.id ? genreToUpdate : genre
+        );
+
+        const updatedUserState = {
+          ...user,
+          cities: updatedUserCities,
+          genres: updatedUserGenres,
+        };
+
+        setUser(updatedUserState);
+        setSelectedArtist(updatedArtist);
+
+        // Log to confirm the update
+        console.log("Updated user state:", updatedUserState);
       });
+    // setUser({
+    //   ...user,
+    //   cities: updatedUserCities,
+    //   genres: updatedUserGenres,
+    // });
+    // console.log("Updated user state:", {
+    //   ...user,
+    //   cities: updatedUserCities,
+    //   genres: updatedUserGenres,
+    // });
   };
+
+  // fetch(`/artists/${id}`, {
+  //   method: "PATCH",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  //   body: JSON.stringify(updatedArtistData),
+  // })
+  //   .then((response) => response.json())
+  //   .then((updatedArtist) => {
+  //     // console.log("Updated artist:", updatedArtist);
+
+  //     const updatedUser = users.find(
+  //       (user) => user.id === updatedArtist.user_id
+  //     );
+  //     console.log("Updated artist from PATCH response:", { updatedArtist });
+  //     console.log({ users, updatedUser });
+
+  //     // pdate the artist's data  for the logged-in user's artist
+  //     if (updatedUser) {
+  //       const updatedArtists = updatedUser.artists.map((artist) =>
+  //         artist.id === updatedArtist.id ? updatedArtist : artist
+  //       );
+  //       console.log({ updatedArtists });
+
+  //       //update users and artists state
+  //       const updatedUsers = users.map((user) =>
+  //         user.id === updatedArtist.user_id
+  //           ? { ...updatedUser, artists: updatedArtists }
+  //           : user
+  //       );
+  //       // console.log("Updated artist from PATCH response:", updatedArtist);
+  //       console.log({ updatedUsers });
+
+  //       setUsers(updatedUsers);
+  //       setArtists(updatedArtists);
+  //     }
+  //   })
+  //   .catch((error) => {
+  //     console.error("Error updating artist:", error);
+  //   });
+
+  // const updateArtist = (id, updatedArtistData) => {
+  //   fetch(`/artists/${id}`, {
+  //     method: "PATCH",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(updatedArtistData),
+  //   })
+  //     .then((response) => response.json())
+  //     .then((updatedArtist) => {
+  //       console.log("Updated artist:", updatedArtist);
+  //       console.log("Looking for user with user_id:", updatedArtist.user_id);
+  //       console.log("Users array:", users);
+
+  //       const updatedUser = users.find(
+  //         (user) => user.id === updatedArtist.user_id
+  //       );
+  //       // Check if updatedUser exists and has artists property
+  //       if (updatedUser && updatedUser.artists) {
+  //         const updatedArtists = updatedUser.artists.map((artist) =>
+  //           artist.id === updatedArtist.id ? updatedArtist : artist
+  //         );
+  //         updatedUser.artists = updatedArtists;
+
+  //         const updatedUsers = users.map((user) =>
+  //           user.id === updatedArtist.user_id ? updatedUser : user
+  //         );
+
+  //         // Update the users and artists state
+  //         setUsers(updatedUsers);
+  //         setArtists(updatedArtists);
+  //       } else {
+  //         console.error(
+  //           "Error: updatedUser or updatedUser.artists is undefined"
+  //         );
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error updating artist:", error);
+  //     });
+  //   //   const updatedArtists = updatedUser.artists.map((artist) =>
+  //   //     artist.id === updatedArtist.id ? updatedArtist : artist
+  //   //   );
+  //   //   updatedUser.artists = updatedArtists;
+  //   //   const updatedUsers = users.map((user) =>
+  //   //     user.id === updatedArtist.user_id ? updatedUser : user
+  //   //   );
+  //   //   setUsers(updatedUsers);
+  //   //   setArtists(updatedArtists);
+  //   // })
+  //   // .catch((error) => {
+  //   //   console.error("Error updating artist:", error);
+  //   // });
+  // };
 
   const deleteArtist = (id) => {
     fetch(`/artists/${id}`, {
@@ -158,7 +310,7 @@ const MyProvider = ({ children }) => {
   };
 
   const addArtist = (newArtist) => {
-    debugger;
+    // debugger;
     let cityOfNewArtist = user.cities.find((c) => c.id === newArtist.city_id);
 
     // if (!cityOfNewArtist) {

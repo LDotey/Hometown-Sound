@@ -129,22 +129,74 @@ class Artists(Resource):
         return new_artist.to_dict(), 201
 
         # return {"message": "Artist created successfully"}, 201
+    # def patch(self, id):
+    #     data = request.get_json()
+    #     artist = Artist.query.get(id)
+    #     if not artist:
+    #         return {"error": "Artist not found"}, 404
+        
+    #     artist.name = data.get("name", artist.name)
+    #     artist.image = data.get("image", artist.image)
+    #     artist.genre_id = data.get("genre_id", artist.genre_id)
+    #     artist.city_id = data.get("city_id", artist.city_id)
+        
+    #     db.session.commit()
     
+    #     return artist.to_dict(), 200
     def patch(self, id):
-        data= request.get_json()
+        data = request.get_json()
         artist = Artist.query.get(id)
-        if not artist:
-            return {"error": "Artist not found"}, 404
+               
         
         artist.name = data.get("name", artist.name)
         artist.image = data.get("image", artist.image)
-        artist.user_id = data.get("user_id", artist.user_id)
-        artist.city_id = data.get("city_id", artist.city_id)
-        artist.genre_id = data.get("genre_id", artist.genre_id)
 
+        print("Incoming PATCH data:", data)
+
+        artist.user_id = current_user.id     
+        artist.city_id = data.get('city_id', artist.city_id)
+        artist.genre_id = data.get('genre_id', artist.genre_id)
+
+        # {"name": artist.name,
+        #          "id": artist.id,
+        #          "image": artist.image,
+        #          "genre": artist.genre,
+        #          "city_id": artist.city_id
+        #          }
+
+        # city = City.query.get(artist.city_id)
+        # if city:
+        #     artist.city = city.name
+
+        # genre = Genre.query.get(artist.genre_id)  
+        # if genre:
+        #     artist.genre = genre.name  
+
+        print("Updated artist genre:", artist.genre)  # Debugging
+        
         db.session.commit()
 
+        # artist = Artist.query.get(id)  # refresh ??
+
+        print("Final artist object:", artist)
+
         return artist.to_dict(), 200
+
+    # def patch(self, id):
+    #     data= request.get_json()
+    #     artist = Artist.query.get(id)
+    #     if not artist:
+    #         return {"error": "Artist not found"}, 404
+        
+    #     artist.name = data.get("name", artist.name)
+    #     artist.image = data.get("image", artist.image)
+    #     # artist.user_id = data.get("user_id", artist.user_id)
+    #     artist.city_id = data.get("city_id", artist.city_id)
+    #     artist.genre_id = data.get("genre_id", artist.genre_id)
+
+    #     db.session.commit()
+
+    #     return artist.to_dict(), 200
     
     def delete(self, id):
         artist = Artist.query.get(id)
@@ -233,7 +285,7 @@ class CurrentUser(Resource):
                 {"name": artist.name,
                  "id": artist.id,
                  "image": artist.image,
-                 "genre": artist.genre.name,
+                 "genre": artist.genre,
                  "city_id": artist.city_id
                  }
 
