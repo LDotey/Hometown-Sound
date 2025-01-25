@@ -285,7 +285,7 @@ class CurrentUser(Resource):
                 {"name": artist.name,
                  "id": artist.id,
                  "image": artist.image,
-                 "genre": artist.genre,
+                 "genre": artist.genre.name,
                  "city_id": artist.city_id
                  }
 

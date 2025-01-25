@@ -34,6 +34,7 @@ function ArtistCard({ artist }) {
         ...values,
         genre_id: values.genre, //  genre_id based on selected genre
         city_id: values.location, //  city_id based on selected location
+
         // user_id: artist.user_id, //  the user_id to update the correct artist for the logged-in user
       };
 
@@ -41,7 +42,7 @@ function ArtistCard({ artist }) {
       console.log("Updated Artist Data:", updatedArtistData);
 
       // call update artist
-      updateArtist(artist.id, updatedArtistData);
+      updateArtist(artist, updatedArtistData);
 
       setIsEditing(false);
     },
