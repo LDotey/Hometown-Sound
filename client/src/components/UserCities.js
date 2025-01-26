@@ -5,6 +5,7 @@ import ArtistCard from "./ArtistCard";
 function UserCities() {
   const {
     user,
+    setUser,
     artists,
     setArtists,
     selectedCity,
@@ -32,29 +33,73 @@ function UserCities() {
   //     setSelectedArtist(null);
   //   };
   // }, []);
-
   const handleCityClick = async (city) => {
     if (!city || !city.id) {
       console.error("city obj or city.id is undefined");
       return;
     }
-    console.log("selected city id:", city.id);
-    console.log(user.id);
+
+    console.log("Selected city ID:", city.id);
+    console.log("Logged-in user ID:", user.id); // Check user.id
+
+    // Set the selected city
     setSelectedCity(city.id);
-    setSelectedArtist(null);
+    setSelectedArtist(null); // Reset selected artist when city changes
 
     setLoading(true);
 
-    const cityArtists =
-      user.cities.find((c) => c.id === city.id)?.artists || [];
+    // Find the selected city in the user data
+    const selectedCityData = user.cities.find((c) => c.id === city.id);
+    if (!selectedCityData) {
+      console.error("City not found in user data.");
+      setLoading(false);
+      return;
+    }
+
+    // Check the artists array before filtering
+    console.log("All artists in selected city:", selectedCityData.artists);
+
+    // Filter artists for this city and make sure to include only those belonging to the logged-in user
+    // const cityArtists = selectedCityData.artists.filter(
+    //   (artist) => artist.user_id === user.id
+    // );
+    const cityArtists = selectedCityData.artists.filter(
+      (artist) => artist.city_id === city.id
+    );
+
+    console.log("Filtered city artists:", cityArtists); // Check what artists are being returned
 
     if (Array.isArray(cityArtists)) {
-      setArtists(cityArtists);
+      setArtists(cityArtists); // Set the filtered artists
     } else {
-      console.error("artist data for city is not an array", cityArtists);
+      console.error("Artist data for city is not an array", cityArtists);
     }
+
     setLoading(false);
   };
+
+  // const handleCityClick = async (city) => {
+  //   if (!city || !city.id) {
+  //     console.error("city obj or city.id is undefined");
+  //     return;
+  //   }
+  //   console.log("selected city id:", city.id);
+  //   console.log(user.id);
+  //   setSelectedCity(city.id);
+  //   setSelectedArtist(null);
+
+  //   setLoading(true);
+
+  //   const cityArtists =
+  //     user.cities.find((c) => c.id === city.id)?.artists || [];
+
+  //   if (Array.isArray(cityArtists)) {
+  //     setArtists(cityArtists);
+  //   } else {
+  //     console.error("artist data for city is not an array", cityArtists);
+  //   }
+  //   setLoading(false);
+  // };
 
   const handleArtistClick = (artist) => {
     console.log("Artist clicked:", artist); // Debug log
@@ -62,6 +107,26 @@ function UserCities() {
     // update  state when an artist is clicked
     setSelectedArtist(artist);
   };
+  // Effect hook to ensure the artists list is cleared when the selected city has no artists
+  useEffect(() => {
+    // If no artists in the selected city, reset the artist list and clear selected artist
+    if (selectedCity) {
+      const city = user.cities.find((c) => c.id === selectedCity);
+      if (city && (!city.artists || city.artists.length === 0)) {
+        setArtists([]); // Clear the artists list
+        setSelectedArtist(null); // Clear selected artist as well
+      }
+    }
+  }, [selectedCity, user.cities, setArtists, setSelectedArtist]);
+
+  useEffect(() => {
+    if (user.cities && selectedCity) {
+      const selectedCityData = user.cities.find((c) => c.id === selectedCity);
+      if (!selectedCityData || selectedCityData.artists.length === 0) {
+        setSelectedCity(null); // Clear selected city if it has no artists
+      }
+    }
+  }, [user.cities, selectedCity, setSelectedCity]);
 
   return (
     <div className="user-cities-container">

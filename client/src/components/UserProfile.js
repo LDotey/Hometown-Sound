@@ -68,27 +68,7 @@ function UserProfile() {
     });
     setViewCities(false); // Hide cities when switching to genres
   };
-  // const toggleViewCities = () => {
-  //   setViewCities(true); // Set cities to visible
-  //   setViewGenres(false); // Hide genres when switching to cities
-  // };
 
-  // const toggleViewGenres = () => {
-  //   setViewGenres(true); // Set genres to visible
-  //   setViewCities(false); // Hide cities when switching to genres
-  // };
-
-  // const toggleViewCities = () => {
-  //   console.log("Toggling to Cities");
-  //   setViewCities(true); // Show Cities view
-  //   setArtists([]); // Clear the artists when switching views
-  // };
-
-  // const toggleViewGenres = () => {
-  //   console.log("Toggling to Genres");
-  //   setViewCities(false); // Show Genres view
-  //   setArtists([]); // Clear the artists when switching views
-  // };
   useEffect(() => {
     console.log("User data:", user);
   }, [user]);

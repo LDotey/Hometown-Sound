@@ -8,15 +8,17 @@ from config import db, bcrypt, login_manager
 
 class User(db.Model, UserMixin, SerializerMixin):
     __tablename__ = "users"
+    serialize_rules = ( '-artists.user', '-artists.genre')
+
     # serialize_rules = ('-artists', '-_password_hash', 'cities', 'genres',)
-    serialize_rules = ( '-artists.user', )
+    # serialize_rules = ( '-artists', '-artists.user', )
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, nullable=False, unique=True)
     _password_hash = db.Column(db.String, nullable=False)
 
-    # artists = db.relationship('Artist', back_populates='user')
-    cities = db.relationship('City', secondary='artists', viewonly=True)
+    artists = db.relationship('Artist', back_populates='user')  # User has many artists
+    cities = db.relationship('City', secondary='artists', viewonly=True)  # Many-to-many through Artist
     genres = db.relationship('Genre', secondary='artists', viewonly=True)
 
     
@@ -46,13 +48,18 @@ class User(db.Model, UserMixin, SerializerMixin):
 
 class City(db.Model, SerializerMixin):
     __tablename__ = "cities"
-    # serialize_rules = ('-artists',)
+    serialize_rules = ('-artists.genre', '-artists.user',  )
+
+    # serialize_rules = ('-cities.artists.genre', 'artists.user_id',  )
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     location = db.Column(db.String)
 
-    artists = db.relationship('Artist', backref='city')
+    # artists = db.relationship('Artist', back_populates='city')
+    artists = db.relationship('Artist', back_populates='city')  # City has many artists
+    # users = db.relationship('User', secondary='artists', viewonly=True)  # Many-to-many through Artist
+    # genres = db.relationship('Genre', secondary='artists', viewonly=True) 
 
 
     def __repr__(self):
@@ -61,13 +68,18 @@ class City(db.Model, SerializerMixin):
 
 class Genre(db.Model, SerializerMixin):
     __tablename__ = "genres"
-    # serialize_rules = ('-artists',)
+    serialize_rules = ('-artists' ,)
+
+    # serialize_rules = ('-user_id', '-artists',)
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     color = db.Column(db.String)
 
-    artists = db.relationship('Artist', backref='genre')
+    # artists = db.relationship('Artist', back_populates='genre')
+    artists = db.relationship('Artist', back_populates='genre')  # Genre has many artists
+    # users = db.relationship('User', secondary='artists', viewonly=True)  # Many-to-many through Artist
+    # cities = db.relationship('City', secondary='artists', viewonly=True)
 
     
 
@@ -77,7 +89,12 @@ class Genre(db.Model, SerializerMixin):
 
 class Artist(db.Model, SerializerMixin):
     __tablename__ = "artists"
-    serialize_rules = ('-user.artists', '-city.artists', '-genre.artists', '-user_id', )
+    # serialize_rules = ( 'user_id', '-user.artists', '-city.artists', '-genre.artists','-genre', 'user_id', )
+    serialize_rules = ('user_id', '-user', '-city', '-genre')
+
+    # serialize_rules = (  'user_id', '-city.artists', '-genre.artists', 'user_id',  )
+    # serialize_rules = ('-user.artists', '-city.artists', '-genre.artists', '-artist.city', '-user.id',)
+
 
 
     id = db.Column(db.Integer, primary_key=True)
@@ -88,9 +105,9 @@ class Artist(db.Model, SerializerMixin):
     city_id = db.Column(db.Integer, db.ForeignKey('cities.id'), nullable=False)
     genre_id = db.Column(db.Integer, db.ForeignKey('genres.id'), nullable=False)
     
-    # user = db.relationship('User', back_populates='artists')
-    # city = db.relationship('City', back_populates='artists')
-    # genre = db.relationship('Genre', back_populates='artists')
+    user = db.relationship('User', back_populates='artists')
+    city = db.relationship('City', back_populates='artists')
+    genre = db.relationship('Genre', back_populates='artists')
 
     # serialize_rules = ('-user', '-user.artists', '-city.artists', '-genre.artists', '-genre_id', '-user_id', '-user.username')
     # serialize_rules = ('-user.artists', '-city.artists', '-genre.artists', '-artist.city', '-user.id',)

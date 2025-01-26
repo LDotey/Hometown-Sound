@@ -128,21 +128,6 @@ class Artists(Resource):
 
         return new_artist.to_dict(), 201
 
-        # return {"message": "Artist created successfully"}, 201
-    # def patch(self, id):
-    #     data = request.get_json()
-    #     artist = Artist.query.get(id)
-    #     if not artist:
-    #         return {"error": "Artist not found"}, 404
-        
-    #     artist.name = data.get("name", artist.name)
-    #     artist.image = data.get("image", artist.image)
-    #     artist.genre_id = data.get("genre_id", artist.genre_id)
-    #     artist.city_id = data.get("city_id", artist.city_id)
-        
-    #     db.session.commit()
-    
-    #     return artist.to_dict(), 200
     def patch(self, id):
         data = request.get_json()
         artist = Artist.query.get(id)
@@ -157,7 +142,17 @@ class Artists(Resource):
         artist.city_id = data.get('city_id', artist.city_id)
         artist.genre_id = data.get('genre_id', artist.genre_id)
 
-        # {"name": artist.name,
+        print("Updated artist genre:", artist.genre)  # Debugging
+        
+        db.session.commit()
+
+        # artist = Artist.query.get(id)  # refresh ??
+
+        print("Final artist object:", artist)
+
+        return artist.to_dict(), 200
+    
+     # {"name": artist.name,
         #          "id": artist.id,
         #          "image": artist.image,
         #          "genre": artist.genre,
@@ -170,17 +165,7 @@ class Artists(Resource):
 
         # genre = Genre.query.get(artist.genre_id)  
         # if genre:
-        #     artist.genre = genre.name  
-
-        print("Updated artist genre:", artist.genre)  # Debugging
-        
-        db.session.commit()
-
-        # artist = Artist.query.get(id)  # refresh ??
-
-        print("Final artist object:", artist)
-
-        return artist.to_dict(), 200
+        #     artist.genre = genre.name 
 
     # def patch(self, id):
     #     data= request.get_json()
@@ -284,8 +269,8 @@ class CurrentUser(Resource):
             artists_in_city = [
                 {"name": artist.name,
                  "id": artist.id,
-                 "image": artist.image,
-                 "genre": artist.genre.name,
+                 "image": artist.image, 
+                 "genre": artist.genre.to_dict() if artist.genre else None, # artist.genre gives TypeError Object of type Genre not serializable
                  "city_id": artist.city_id
                  }
 

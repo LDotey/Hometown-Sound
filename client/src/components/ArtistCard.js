@@ -5,14 +5,14 @@ import { useFormik } from "formik";
 function ArtistCard({ artist }) {
   const { cities, genres, updateArtist, deleteArtist } = useContext(MyContext);
   const [isEditing, setIsEditing] = useState(false);
-  console.log({ source: "artist card", artist });
+  // console.log({ source: "artist card", artist });
 
   useEffect(() => {
     if (artist) {
       formik.setValues({
         name: artist.name,
         image: artist.image,
-        genre: artist.genre_id || "", // Use the genre's ID to set the initial value
+        genre: artist.genre ? artist.genre.id : "", // Use the genre's ID to set the initial value
         location: artist.city_id || "", // Use the city_id for the initial location value
       });
     }
@@ -22,7 +22,7 @@ function ArtistCard({ artist }) {
     initialValues: {
       name: artist.name || "",
       image: artist.image || "",
-      genre: artist.genre_id || "", //  the genre's ID to set the initial value
+      genre: artist.genre ? artist.genre.id : "", //  the genre's ID to set the initial value
       location: artist.city_id || "", //  the city_id for the initial location value
     },
     enableReinitialize: true,
