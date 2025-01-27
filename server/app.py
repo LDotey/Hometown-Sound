@@ -7,6 +7,7 @@ from flask import request, session
 from flask_restful import Resource
 from flask_login import current_user, login_user, logout_user, login_required, login_remembered
 from copy import copy, deepcopy
+import random
 
 # Local imports
 from config import app, db, api, login_manager, bcrypt
@@ -17,6 +18,8 @@ from models import User, City, Genre, Artist
 
 
 CORS(app)
+
+
 
 
 # Views go here!
@@ -76,9 +79,32 @@ class Cities(Resource):
         return new_city.to_dict(), 201
     
 class Genres(Resource):
+    
     def get(self):
         genres = [genre.to_dict() for genre in Genre.query.all()]
         return genres, 200
+    
+    def post(self):
+        data = request.get_json()
+
+        genre_name = capitalize_words(data['name'])
+
+        # Function to generate a random color in hex format
+        def generate_random_color():
+            return f'#{random.randint(0, 0xFFFFFF):06x}'
+
+        # Generate random color
+        random_color = generate_random_color()
+
+        new_genre = Genre(
+            name=genre_name,
+            color=random_color
+        )
+
+        db.session.add(new_genre)
+        db.session.commit()
+
+        return new_genre.to_dict(), 201
     
 class Artists(Resource):
     def get(self):

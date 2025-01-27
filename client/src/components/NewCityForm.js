@@ -75,8 +75,8 @@ function CreateCity() {
   useEffect(() => {
     fetch("/cities")
       .then((resp) => resp.json())
-      .then((data) => {
-        setCities(data);
+      .then((cityData) => {
+        setCities(cityData);
       })
       .catch((error) => {
         console.error("Error fetching cities:", error);

@@ -12,8 +12,8 @@ function ArtistCard({ artist }) {
       formik.setValues({
         name: artist.name,
         image: artist.image,
-        genre: artist.genre ? artist.genre.id : "", // Use the genre's ID to set the initial value
-        location: artist.city_id || "", // Use the city_id for the initial location value
+        genre: artist.genre ? artist.genre.id : "", // use the genre's id to set the initial value
+        location: artist.city_id || "", // use the city_id for the initial location value
       });
     }
   }, [artist]);
@@ -22,7 +22,7 @@ function ArtistCard({ artist }) {
     initialValues: {
       name: artist.name || "",
       image: artist.image || "",
-      genre: artist.genre ? artist.genre.id : "", //  the genre's ID to set the initial value
+      genre: artist.genre ? artist.genre.id : "", //  the genre's id to set the initial value
       location: artist.city_id || "", //  the city_id for the initial location value
     },
     enableReinitialize: true,
@@ -50,6 +50,10 @@ function ArtistCard({ artist }) {
 
   const handleEditClick = () => {
     setIsEditing(!isEditing);
+  };
+
+  const handleDeleteClick = () => {
+    deleteArtist(artist.id);
   };
 
   if (!artist) {
@@ -82,52 +86,11 @@ function ArtistCard({ artist }) {
         <img src={artist.image} alt={artist.name} />
       )}
 
-      {/* Genre Dropdown */}
-      {isEditing ? (
-        <select
-          name="genre"
-          value={formik.values.genre}
-          onChange={formik.handleChange}
-        >
-          <option value="">Select Genre</option>
-          {genres.map((genre) => (
-            <option key={genre.id} value={genre.id}>
-              {genre.name}
-            </option>
-          ))}
-        </select>
-      ) : (
-        <p>Genre: {artist.genre ? artist.genre.name : "No genre assigned"}</p>
-      )}
-
-      {/* Location Dropdown */}
-      {isEditing ? (
-        <select
-          name="location"
-          value={formik.values.location}
-          onChange={formik.handleChange}
-        >
-          <option value="">Select Location</option>
-          {cities.map((city) => (
-            <option key={city.id} value={city.id}>
-              {city.name}
-            </option>
-          ))}
-        </select>
-      ) : (
-        <p>
-          Location:{" "}
-          {artist.city_id
-            ? cities.find((city) => city.id === artist.city_id)?.name ||
-              "City not found"
-            : "City not assigned"}
-        </p>
-      )}
-
       <button onClick={handleEditClick}>
         {isEditing ? "Cancel" : "Edit this Artist"}
       </button>
       <br />
+      <button onClick={handleDeleteClick}>Delete This Artist</button>
       {isEditing && (
         <button type="submit" onClick={formik.handleSubmit}>
           Submit changes
@@ -272,3 +235,51 @@ export default ArtistCard;
 // }
 
 // export default ArtistCard;
+
+{
+  /* /* Genre Dropdown */
+}
+{
+  /* {isEditing ? //( */
+}
+// <select
+//   name="genre"
+//   value={formik.values.genre} */}
+//   onChange={formik.handleChange}
+// >
+//   <option value="">Select Genre</option>
+//   {genres.map((genre) => (
+//     <option key={genre.id} value={genre.id}>
+//       {genre.name}
+//     </option>
+//   ))}
+// </select>
+// ) : (
+// <p>Genre: {artist.genre ? artist.genre.name : "No genre assigned"}</p>
+// )}
+
+{
+  /* Location Dropdown */
+}
+// {isEditing ? (
+//   <select
+//     name="location"
+//     value={formik.values.location}
+//     onChange={formik.handleChange}
+//   >
+//     <option value="">Select Location</option>
+//     {cities.map((city) => (
+//       <option key={city.id} value={city.id}>
+//         {city.name}
+//       </option>
+//     ))}
+//   </select>
+// ) : (
+//   <p>
+//     Location:{" "}
+//     {artist.city_id
+//       ? cities.find((city) => city.id === artist.city_id)?.name ||
+//         "City not found"
+//       : "City not assigned"}
+//   </p>
+// )}
