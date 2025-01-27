@@ -446,7 +446,7 @@ const MyProvider = ({ children }) => {
       console.log("Creating new genre for artist:", newArtist.genre_id);
       genreOfNewArtist = {
         id: newArtist.genre_id,
-        name: newArtist.genre.name,
+        name: genreOfNewArtist,
         color: generateRandomColor(),
         artists: [],
       };
