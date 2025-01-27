@@ -1,9 +1,13 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { MyContext } from "./AppContext";
 
 function NavBar() {
   const { isAuthenticated } = useContext(MyContext);
+
+  useEffect(() => {
+    console.log("authenticating!!", isAuthenticated);
+  }, [isAuthenticated]);
 
   return (
     <nav className="navbar">
@@ -12,13 +16,18 @@ function NavBar() {
       </NavLink>
 
       {/* Conditionally render Login or Profile link based on authentication */}
-      {isAuthenticated ? (
-        <NavLink to="/profile" activeclassname="active">
-          Profile
-        </NavLink>
-      ) : (
+      {/* {if (isAuthenticated){
+        return (<NavLink to="/profile" activeclassname="active">
+        Profile
+      </NavLink>)
+      }} */}
+      {isAuthenticated !== 1 && !isAuthenticated ? (
         <NavLink to="/login" activeclassname="active">
           Sign In
+        </NavLink>
+      ) : (
+        <NavLink to="/profile" activeclassname="active">
+          Profile
         </NavLink>
       )}
       <NavLink to="/genres" activeclassname="active">

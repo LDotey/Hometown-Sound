@@ -52,10 +52,18 @@ const CreateArtist = () => {
     validateOnBlur: true,
     onSubmit: async (values) => {
       console.log("I've been clicked");
-      if (!values.genre_id && !values.genre_name) {
+      // Parse genre_id to an integer before submitting
+      const genreId = values.genre_id ? parseInt(values.genre_id, 10) : null;
+
+      // Make sure genre_id is set
+      if (!genreId && !values.genre_name) {
         alert("Please select an existing genre or create a new genre.");
         return;
       }
+      // if (!values.genre_id && !values.genre_name) {
+      //   alert("Please select an existing genre or create a new genre.");
+      //   return;
+      // }
       console.log("Formik is valid:", formik.isValid);
       console.log("Formik errors:", formik.errors);
 
@@ -75,7 +83,7 @@ const CreateArtist = () => {
             image: values.image,
             city_name: values.city_name,
             city_location: values.city_location,
-            genre_id: values.genre_id,
+            genre_id: genreId,
             genre_name: values.genre_name,
             user_id: user.id,
           };
@@ -85,7 +93,7 @@ const CreateArtist = () => {
             name: values.name,
             image: values.image,
             city_id: values.city_id,
-            genre_id: values.genre_id,
+            genre_id: genreId,
             genre_name: values.genre_name,
             user_id: user.id,
           };
@@ -213,8 +221,10 @@ const CreateArtist = () => {
           <select
             id="genre_id"
             name="genre_id"
-            onChange={formik.handleChange}
-            value={formik.values.genre_id}
+            onChange={(e) =>
+              formik.setFieldValue("genre_id", parseInt(e.target.value, 10))
+            }
+            value={formik.values.genre_id || ""}
           >
             <option value="">Select a Genre</option>
             {genres.map((genre, index) => (

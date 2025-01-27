@@ -4,7 +4,16 @@ from flask_login import UserMixin
 
 from config import db, bcrypt, login_manager
 
-# Models go here!
+# # Models go here!
+# @login_manager.user_loader
+# def load_user(user_id):
+#     return User.query.get(int(user_id))
+
+# Flask-Login User Loader
+@login_manager.user_loader
+def load_user(user_id):
+        
+        return db.session.get(User, int(user_id))
 
 class User(db.Model, UserMixin, SerializerMixin):
     __tablename__ = "users"
@@ -34,11 +43,11 @@ class User(db.Model, UserMixin, SerializerMixin):
         return str(self.id)
     
      
-      # Flask-Login User Loader
-    @login_manager.user_loader
-    def load_user(user_id):
+    #   # Flask-Login User Loader
+    # @login_manager.user_loader
+    # def load_user(user_id):
         
-        return db.session.get(User, int(user_id))   
+    #     return db.session.get(User, int(user_id))   
 
     
 

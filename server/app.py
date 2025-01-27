@@ -106,6 +106,83 @@ class Genres(Resource):
 
         return new_genre.to_dict(), 201
     
+# class Artists(Resource):
+#     def get(self):
+#         artists = [artist.to_dict() for artist in Artist.query.all()]
+#         return artists, 200
+    
+#     def post(self):
+#         data = request.get_json()
+#         # breakpoint()
+
+#         city_name = data.get("city_name")
+#         city_location = data.get("city_location")
+#         city_id = data.get("city_id")
+#         genre_id = data.get("genre_id")
+#         genre_name = data.get("genre_name")
+#         genre_color = data.get("genre_color")
+
+#         # create the artist
+#         new_artist = Artist(
+#             name=data.get("name"),
+#             image=data.get("image"),
+#             user_id=data.get("user_id"),
+#             # city_id=city_id,
+#             # genre_id=genre_id,
+#         )
+
+#         # check if city_id is provided, if not, create a new city
+#         if not city_id and city_name and city_location:
+#             city = City.query.filter_by(name=city_name).first()
+#             if not city:                
+#                 city = City(name=city_name, location=city_location)
+#                 # new_artist.city = city
+#                 # new_artist.city_id = city_id
+#                 # breakpoint()
+#                 db.session.add(city)
+#                 db.session.commit()
+#             city_id = city.id  # use the ID of the new or existing city
+#             new_artist.city_id = city_id
+
+# # Check if genre_id is provided, if not, create a new genre
+#         if genre_id:
+#             genre_id = int(genre_id)  # Ensure genre_id is an integer
+#             print(f"Using existing genre with ID: {genre_id}")
+#         elif genre_name:  # Only create a new genre if genre_name is provided
+#             print(f"Looking for genre: {genre_name}")
+#             genre = Genre.query.filter_by(name=genre_name).first()
+#             if not genre:
+#                 print(f"Creating new genre: {genre_name} with color {genre_color}")
+#                 genre = Genre(name=genre_name, color=genre_color)
+#                 db.session.add(genre)
+#                 db.session.commit()  # Commit to generate an ID for the new genre
+#             genre_id = genre.id  # Set the genre_id for the new artist
+#             print(f"Genre ID assigned: {genre_id}")
+#         # if not genre_id and genre_name:
+#         #     genre = Genre.query.filter_by(name=genre_name).first()
+#         #     if not genre:
+#         #         genre = Genre(name=genre_name, color=genre_color)
+#         #         # new_artist.genre = genre
+#         #         db.session.add(genre)
+#         #         db.session.commit()
+#         #     genre_id = genre.id
+#             new_artist.genre_id = genre_id
+
+        
+#         # # create the artist
+#         # new_artist = Artist(
+#         #     name=data.get("name"),
+#         #     image=data.get("image"),
+#         #     user_id=data.get("user_id"),
+#         #     city_id=city_id,
+#         #     genre_id=genre_id,
+#         # )
+        
+#         db.session.add(new_artist)
+#         db.session.commit()
+
+#         return new_artist.to_dict(), 201
+
 class Artists(Resource):
     def get(self):
         artists = [artist.to_dict() for artist in Artist.query.all()]
@@ -113,8 +190,7 @@ class Artists(Resource):
     
     def post(self):
         data = request.get_json()
-        # breakpoint()
-
+        
         city_name = data.get("city_name")
         city_location = data.get("city_location")
         city_id = data.get("city_id")
@@ -122,25 +198,31 @@ class Artists(Resource):
         genre_name = data.get("genre_name")
         genre_color = data.get("genre_color")
 
-        # check if city_id is provided, if not, create a new city
+        # Ensure genre_id is processed before artist creation
+        if genre_id:
+            genre_id = int(genre_id)  # Ensure genre_id is an integer
+            print(f"Using existing genre with ID: {genre_id}")
+        elif genre_name:  # Only create a new genre if genre_name is provided
+            print(f"Looking for genre: {genre_name}")
+            genre = Genre.query.filter_by(name=genre_name).first()
+            if not genre:
+                print(f"Creating new genre: {genre_name} with color {genre_color}")
+                genre = Genre(name=genre_name, color=genre_color)
+                db.session.add(genre)
+                db.session.commit()  # Commit to generate an ID for the new genre
+            genre_id = genre.id  # Set the genre_id for the new artist
+            print(f"Genre ID assigned: {genre_id}")
+        
+        # Ensure city_id is processed before artist creation
         if not city_id and city_name and city_location:
             city = City.query.filter_by(name=city_name).first()
             if not city:                
                 city = City(name=city_name, location=city_location)
-                # breakpoint()
                 db.session.add(city)
                 db.session.commit()
-            city_id = city.id  # use the ID of the new or existing city
-
-        if not genre_id and genre_name:
-            genre = Genre.query.filter_by(name=genre_name).first()
-            if not genre:
-                genre = Genre(name=genre_name, color=genre_color)
-                db.session.add(genre)
-                db.session.commit()
-            genre_id = genre.id
+            city_id = city.id  # Use the ID of the new or existing city
         
-        # create the artist
+        # Now create the artist, ensuring both genre_id and city_id are set
         new_artist = Artist(
             name=data.get("name"),
             image=data.get("image"),

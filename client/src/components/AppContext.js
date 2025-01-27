@@ -12,7 +12,7 @@ const MyProvider = ({ children }) => {
 
   const [cities, setCities] = useState([]);
   const [genres, setGenres] = useState([]);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(1);
   const [artists, setArtists] = useState([]);
   const [selectedCity, setSelectedCity] = useState(null);
   const [selectedGenre, setSelectedGenre] = useState(null);
@@ -52,40 +52,7 @@ const MyProvider = ({ children }) => {
       });
   }, []);
 
-  // useEffect(() => {
-  //   // Fetch the current logged-in user
-  //   fetch("/current_user", {
-  //     method: "GET",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     credentials: "include",
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       console.log("Current User Data:", data);
-
-  //       if (data) {
-  //         setUser({
-  //           ...data,
-  //           cities: data.cities || [],
-  //           genres: data.genres || [],
-  //         });
-  //         setIsAuthenticated(true);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.error("Error fetching current user:", err);
-  //       setIsAuthenticated(false);
-  //     });
-  // }, []);
-
-  // useEffect(() => {
-  //   console.log(user); // Check if cities and genres are in the user state
-  // }, [user]);
-
   // '/cities'
-
   useEffect(() => {
     fetch("/cities")
       .then((response) => response.json())
@@ -454,51 +421,51 @@ const MyProvider = ({ children }) => {
   // };
 
   const addArtist = (newArtist) => {
-    // Fetch the city using city_id from the user.cities array
+    // get  city using city_id from the user.cities array
     let cityOfNewArtist = user.cities.find((c) => c.id === newArtist.city_id);
 
     if (!cityOfNewArtist) {
-      // If the city doesn't exist, create it using city_id and related data
-      console.log("Creating new city for artist:", newArtist.city_id);
+      //if doesn't exist, create it using city_id and related data
+      // console.log("Creating new city for artist:", newArtist.city_id);
       cityOfNewArtist = {
         id: newArtist.city_id,
-        name: newArtist.city.name, // Use the city name entered in the form
-        location: newArtist.city.location, // Replace this with actual location if available
+        name: cityOfNewArtist,
+        location: newArtist.location,
         artists: [],
       };
 
-      // Add the new city to the cities array
+      // add the new city to the cities array
       user.cities.push(cityOfNewArtist);
     }
 
-    // Fetch the genre using genre_id from the user.genres array
+    // get the genre using genre_id from the user.genres array
     let genreOfNewArtist = user.genres.find((g) => g.id === newArtist.genre_id);
 
     if (!genreOfNewArtist) {
-      // If the genre doesn't exist, create it using genre_id and related data
+      // if the genre doesn't exist, create it using genre_id and related data
       console.log("Creating new genre for artist:", newArtist.genre_id);
       genreOfNewArtist = {
         id: newArtist.genre_id,
-        name: newArtist.genre.name, // Or fetch the actual name from your data source
-        color: generateRandomColor(), // Assuming a function to generate random colors
+        name: newArtist.genre.name,
+        color: generateRandomColor(),
         artists: [],
       };
 
-      // Add the new genre to the genres array
+      // add  new genre to genres array
       user.genres.push(genreOfNewArtist);
     }
 
-    // Now, update the city and genre with the new artist
+    //  update the city and genre with the new artist
     const updatedArtist = {
       id: newArtist.id,
       name: newArtist.name,
       image: newArtist.image,
-      genre: genreOfNewArtist.name, // Use genre name from the genreOfNewArtist object
+      genre: genreOfNewArtist,
       city_id: newArtist.city_id,
       genre_id: newArtist.genre_id,
     };
 
-    // Update the artist list for the city
+    // update the artist list for the city
     const updatedArtists = [...cityOfNewArtist.artists, updatedArtist];
 
     // Update the city object with the new artist
@@ -513,7 +480,7 @@ const MyProvider = ({ children }) => {
       g.id === updatedUserGenre.id ? updatedUserGenre : g
     );
 
-    // Update the user state with the new city and genre data
+    // update user state with the new city and genre data
     setUser({
       ...user,
       cities: updatedUserCities,
@@ -521,7 +488,7 @@ const MyProvider = ({ children }) => {
     });
 
     // **Update the selected artist state**
-    setSelectedArtist(updatedArtist); // Now we have the updated artist object available
+    setSelectedArtist(updatedArtist);
 
     // // check if the genre already exists using filter
     // const genreExists =

@@ -21,7 +21,7 @@ function UserProfile() {
   }, [viewCities, setArtists]);
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated && isAuthenticated === 1) {
       navigate("/login");
     }
   }, [isAuthenticated, navigate]);
@@ -76,7 +76,7 @@ function UserProfile() {
     console.log("User cities:", user.cities); // Debug log to check the cities data
   }, [user]); // Log whenever user data changes
 
-  if (!isAuthenticated) {
+  if (isAuthenticated !== 1 && !isAuthenticated) {
     return <div>Redirecting to login...</div>;
   } else if (!user) {
     return <div>Log in you loser</div>;
