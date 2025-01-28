@@ -93,11 +93,11 @@ function UserProfile() {
 
           {/* Always visible toggle buttons for Cities and Genres */}
           <button onClick={toggleViewCities}>
-            {viewCities ? "Hide Cities" : "View Cities"}
+            {viewCities ? "Hide My Cities" : "View My Cities"}
           </button>
 
           <button onClick={toggleViewGenres}>
-            {viewGenres ? "Hide Genres" : "View Genres"}
+            {viewGenres ? "Hide My Genres" : "View My Genres"}
           </button>
 
           {/* <button onClick={handleLogout}>Logout</button> */}

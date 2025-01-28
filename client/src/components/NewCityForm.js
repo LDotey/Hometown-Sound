@@ -104,16 +104,26 @@ function CreateCity() {
           name="location"
           onChange={(e) => {
             formik.handleChange(e);
-            setNewLocation(""); // Reset the new location when selecting from dropdown
+            setNewLocation(""); // reset the new location when selecting from dropdown
           }}
           value={formik.values.location}
         >
           <option value="">Select a location</option>
+
+          {/* make it unique locations */}
+          {[...new Set(cities.map((city) => city.location))].map(
+            (location, index) => (
+              <option key={index} value={location}>
+                {location}
+              </option>
+            )
+          )}
+          {/* <option value="">Select a location</option>
           {cities.map((city) => (
             <option key={city.id} value={city.location}>
               {city.location}
             </option>
-          ))}
+          ))} */}
           <option value="new">Add a new location</option>
         </select>
 
