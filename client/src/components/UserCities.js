@@ -19,20 +19,20 @@ function UserCities() {
   // console.log("User cities in UserCities:", user.cities); // Debug log
 
   // ***** don't need this because now state is updatting correctly.??
-  // useEffect(() => {
-  //   // clear artists and selected genre when the component mounts
-  //   console.log("Resetting artists and selectedCity.");
-  //   setArtists([]);
-  //   setSelectedCity(null);
-  //   setSelectedArtist(null);
+  useEffect(() => {
+    // clear artists and selected genre when the component mounts
+    console.log("Resetting artists and selectedCity.");
+    // setArtists([]);
+    setSelectedCity(null);
+    // setSelectedArtist(null);
 
-  //   // cleanup function to reset when the component unmounts
-  //   return () => {
-  //     setArtists([]);
-  //     setSelectedCity(null);
-  //     setSelectedArtist(null);
-  //   };
-  // }, []);
+    // cleanup function to reset when the component unmounts
+    return () => {
+      // setArtists([]);
+      setSelectedCity(null);
+      // setSelectedArtist(null);
+    };
+  }, []);
   const handleCityClick = async (city) => {
     if (!city || !city.id) {
       console.error("city obj or city.id is undefined");
