@@ -196,33 +196,31 @@ class Artists(Resource):
         city_id = data.get("city_id")
         genre_id = data.get("genre_id")
         genre_name = data.get("genre_name")
-        genre_color = data.get("genre_color")
+        genre_color = data.get("genre_color", '#D32447')
 
-        # Ensure genre_id is processed before artist creation
         if genre_id:
-            genre_id = int(genre_id)  # Ensure genre_id is an integer
+            genre_id = int(genre_id)  
             print(f"Using existing genre with ID: {genre_id}")
-        elif genre_name:  # Only create a new genre if genre_name is provided
+        elif genre_name:  #  create a new genre if genre_name is provided
             print(f"Looking for genre: {genre_name}")
             genre = Genre.query.filter_by(name=genre_name).first()
             if not genre:
                 print(f"Creating new genre: {genre_name} with color {genre_color}")
                 genre = Genre(name=genre_name, color=genre_color)
                 db.session.add(genre)
-                db.session.commit()  # Commit to generate an ID for the new genre
-            genre_id = genre.id  # Set the genre_id for the new artist
+                db.session.commit()  # commit now to generate an id for the new genre
+            genre_id = genre.id  #  genre_id for the new artist
             print(f"Genre ID assigned: {genre_id}")
         
-        # Ensure city_id is processed before artist creation
+        #  city_id is processed before artist creation
         if not city_id and city_name and city_location:
             city = City.query.filter_by(name=city_name).first()
             if not city:                
                 city = City(name=city_name, location=city_location)
                 db.session.add(city)
                 db.session.commit()
-            city_id = city.id  # Use the ID of the new or existing city
+            city_id = city.id  
         
-        # Now create the artist, ensuring both genre_id and city_id are set
         new_artist = Artist(
             name=data.get("name"),
             image=data.get("image"),
@@ -233,8 +231,19 @@ class Artists(Resource):
         
         db.session.add(new_artist)
         db.session.commit()
+         # Fetch the full city and genre info
+        city = City.query.get(city_id)
+        genre = Genre.query.get(genre_id)
 
-        return new_artist.to_dict(), 201
+        # Return the artist along with city and genre details
+        artist_with_city_and_genre = new_artist.to_dict()
+        artist_with_city_and_genre["city_name"] = city.name
+        artist_with_city_and_genre["city_location"] = city.location
+        artist_with_city_and_genre["genre_name"] = genre.name  # Add genre name to response
+
+        return artist_with_city_and_genre, 201
+
+        # return new_artist.to_dict(), 201
 
     def patch(self, id):
         data = request.get_json()
@@ -379,7 +388,8 @@ class CurrentUser(Resource):
                  "id": artist.id,
                  "image": artist.image, 
                  "genre": artist.genre.to_dict() if artist.genre else None, # artist.genre gives TypeError Object of type Genre not serializable
-                 "city_id": artist.city_id
+                 "city_id": artist.city_id,
+                 "user_id": artist.user_id  # Add user_id to the artist data
                  }
 
                  for artist in city.artists if artist.user_id == current_user.id

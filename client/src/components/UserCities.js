@@ -58,14 +58,24 @@ function UserCities() {
 
     // Check the artists array before filtering
     console.log("All artists in selected city:", selectedCityData.artists);
+    // Log the `city_id` and `user_id` of each artist
+    selectedCityData.artists.forEach((artist) => {
+      console.log(
+        `Artist ID: ${artist.id}, City ID: ${artist.city_id}, User ID: ${artist.user_id}`
+      );
+    });
 
     // Filter artists for this city and make sure to include only those belonging to the logged-in user
     // const cityArtists = selectedCityData.artists.filter(
     //   (artist) => artist.user_id === user.id
     // );
+    // Filter artists by city and user_id to ensure that only the logged-in user's artists are shown
     const cityArtists = selectedCityData.artists.filter(
-      (artist) => artist.city_id === city.id
+      (artist) => artist.city_id === city.id //&& artist.user_id === user.id
     );
+    // const cityArtists = selectedCityData.artists.filter(
+    //   (artist) => artist.city_id === city.id
+    // );
 
     console.log("Filtered city artists:", cityArtists); // Check what artists are being returned
 

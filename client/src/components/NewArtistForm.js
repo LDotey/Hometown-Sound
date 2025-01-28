@@ -149,121 +149,107 @@ const CreateArtist = () => {
   // }, [formik.values]); //  when formik values change
 
   return (
-    <div>
+    <div class="create-artist-form">
       <form onSubmit={formik.handleSubmit}>
-        <div>
-          <label htmlFor="name">Artist Name:</label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            onChange={formik.handleChange}
-            value={formik.values.name}
-          />
-        </div>
-        <br />
-        <div>
-          <label htmlFor="image">Artist Image URL:</label>
-          <input
-            id="image"
-            name="image"
-            type="text"
-            onChange={formik.handleChange}
-            value={formik.values.image}
-          />
-        </div>
-        <br />
-        <div>
-          <label htmlFor="city_id">City:</label>
-          <select
-            id="city_id"
-            name="city_id"
-            onChange={formik.handleChange}
-            value={formik.values.city_id}
-          >
-            <option value="">Select a City</option>
-            {cities.map((city, index) => (
-              <option key={`${city.id}-${index}`} value={city.id}>
-                {city.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <h5>OR</h5>
-        </div>
-        {/* if no city is selected show fields for adding a new city / location */}
-        {!formik.values.city_id && (
-          <div>
-            <label htmlFor="city_name">New City Name:</label>
-            <input
-              id="city_name"
-              name="city_name"
-              type="text"
-              onChange={formik.handleChange}
-              value={formik.values.city_name}
-            />
-
-            <label htmlFor="city_location">City Location:</label>
-            <input
-              id="city_location"
-              name="city_location"
-              type="text"
-              onChange={formik.handleChange}
-              value={formik.values.city_location}
-            />
-          </div>
+        <label htmlFor="name">Artist Name:</label>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          onChange={formik.handleChange}
+          value={formik.values.name}
+        />
+        {formik.errors.name && formik.touched.name && (
+          <div className="error">{formik.errors.name}</div>
         )}
-        <br />
 
-        <div>
-          <label htmlFor="genre_id">Genre:</label>
-          <select
-            id="genre_id"
-            name="genre_id"
-            onChange={(e) =>
-              formik.setFieldValue("genre_id", parseInt(e.target.value, 10))
-            }
-            value={formik.values.genre_id || ""}
-          >
-            <option value="">Select a Genre</option>
-            {genres.map((genre, index) => (
-              <option key={`${genre.id}-${index}`} value={genre.id}>
-                {genre.name}
-              </option>
-            ))}
-          </select>
-          {formik.errors.genre_id && formik.touched.genre_id && (
-            <div className="error">{formik.errors.genre_id}</div>
-          )}
+        <label htmlFor="image">Artist Image URL:</label>
+        <input
+          id="image"
+          name="image"
+          type="text"
+          onChange={formik.handleChange}
+          value={formik.values.image}
+        />
+        {formik.errors.image && formik.touched.image && (
+          <div className="error">{formik.errors.image}</div>
+        )}
+        {/* <br /> */}
+
+        <div className="city-genre-options">
+          <div>
+            <label htmlFor="city_id">City:</label>
+            <select
+              id="city_id"
+              name="city_id"
+              onChange={formik.handleChange}
+              value={formik.values.city_id}
+            >
+              <option value="">Select a City</option>
+              {cities.map((city) => (
+                <option key={city.id} value={city.id}>
+                  {city.name}
+                </option>
+              ))}
+            </select>
+            <br />
+            {!formik.values.city_id && (
+              <>
+                <label htmlFor="city_name">New City Name:</label>
+                <input
+                  id="city_name"
+                  name="city_name"
+                  type="text"
+                  onChange={formik.handleChange}
+                  value={formik.values.city_name}
+                />
+
+                <label htmlFor="city_location">City Location:</label>
+                <input
+                  id="city_location"
+                  name="city_location"
+                  type="text"
+                  onChange={formik.handleChange}
+                  value={formik.values.city_location}
+                />
+              </>
+            )}
+          </div>
+
+          <div>
+            <label htmlFor="genre_id">Genre:</label>
+            <select
+              id="genre_id"
+              name="genre_id"
+              onChange={formik.handleChange}
+              value={formik.values.genre_id}
+            >
+              <option value="">Select a Genre</option>
+              {genres.map((genre) => (
+                <option key={genre.id} value={genre.id}>
+                  {genre.name}
+                </option>
+              ))}
+            </select>
+
+            {!formik.values.genre_id && (
+              <>
+                <label htmlFor="genre_name">New Genre Name:</label>
+                <input
+                  id="genre_name"
+                  name="genre_name"
+                  type="text"
+                  onChange={formik.handleChange}
+                  value={formik.values.genre_name}
+                />
+              </>
+            )}
+          </div>
         </div>
-        <div>
-          <h5>OR</h5>
-        </div>
-        <div>
-          {!formik.values.genre_id && (
-            <div>
-              <label htmlFor="genre_name">New Genre Name:</label>
-              <input
-                id="genre_name"
-                name="genre_name"
-                type="text"
-                onChange={formik.handleChange}
-                value={formik.values.genre_name}
-              />
-              {formik.errors.genre_name && formik.touched.genre_name && (
-                <div className="error">{formik.errors.genre_name}</div>
-              )}
-            </div>
-          )}
-          <br />
-        </div>
-        <br />
 
         <button type="submit">Create Artist</button>
       </form>
 
-      {/* success notification */}
       {showSuccess && (
         <div className="success-message">
           <span>✔️</span> Artist created successfully!

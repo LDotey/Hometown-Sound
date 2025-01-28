@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const MyContext = createContext();
 
@@ -17,6 +18,8 @@ const MyProvider = ({ children }) => {
   const [selectedCity, setSelectedCity] = useState(null);
   const [selectedGenre, setSelectedGenre] = useState(null);
   const [selectedArtist, setSelectedArtist] = useState(null);
+
+  const navigate = useNavigate();
 
   const generateRandomColor = () => {
     const letters = "0123456789ABCDEF";
@@ -66,6 +69,29 @@ const MyProvider = ({ children }) => {
       .then((data) => setGenres(data))
       .catch((err) => console.error("Error fetching genres:", err));
   }, []);
+
+  const logoutUser = (e) => {
+    e.preventDefault();
+    // const handleLogout = () => {
+    fetch("/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include", // include credentials for session cookies
+    })
+      .then((response) => {
+        if (response.ok) {
+          setUser(null); // Clear user data in context
+          setIsAuthenticated(false); // Update the authentication state
+          navigate("/login"); // Redirect to login page
+        }
+      })
+      .catch((err) => {
+        console.error("Logout failed:", err);
+        alert("An error occurred during logout.");
+      });
+  };
 
   const updateArtist = (artist, updatedArtistData) => {
     const { name, image } = updatedArtistData;
@@ -390,36 +416,6 @@ const MyProvider = ({ children }) => {
       });
   };
 
-  // const deleteArtist = (id) => {
-  //   fetch(`/artists/${id}`, {
-  //     method: "DELETE",
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       console.log("deleted artist response:", data);
-
-  //       if (data.message === "Artist deleted successfully") {
-  //         const updatedUsers = users.map((user) => {
-  //           if (user.id === data.user_id) {
-  //             // filter out the deleted artist from the user's artists array
-  //             user.artists = user.artists.filter((artist) => artist.id !== id);
-  //           }
-  //           return user;
-  //         });
-  //         console.log("updated Users after deleting artist:", updatedUsers);
-  //         setUsers([...updatedUsers]);
-
-  //         const updatedArtists = artists.filter((artist) => artist.id !== id);
-  //         setArtists(updatedArtists);
-  //       } else {
-  //         console.error("failed to delete artist:", data);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error deleting artist:", error);
-  //     });
-  // };
-
   const addArtist = (newArtist) => {
     // get  city using city_id from the user.cities array
     let cityOfNewArtist = user.cities.find((c) => c.id === newArtist.city_id);
@@ -429,8 +425,8 @@ const MyProvider = ({ children }) => {
       // console.log("Creating new city for artist:", newArtist.city_id);
       cityOfNewArtist = {
         id: newArtist.city_id,
-        name: cityOfNewArtist,
-        location: newArtist.location,
+        name: newArtist.city_name,
+        location: newArtist.city_location,
         artists: [],
       };
 
@@ -446,7 +442,7 @@ const MyProvider = ({ children }) => {
       console.log("Creating new genre for artist:", newArtist.genre_id);
       genreOfNewArtist = {
         id: newArtist.genre_id,
-        name: genreOfNewArtist,
+        name: newArtist.genre_name,
         color: generateRandomColor(),
         artists: [],
       };
@@ -460,14 +456,13 @@ const MyProvider = ({ children }) => {
       id: newArtist.id,
       name: newArtist.name,
       image: newArtist.image,
-      genre: genreOfNewArtist,
+      genre: newArtist.genre_name,
       city_id: newArtist.city_id,
       genre_id: newArtist.genre_id,
     };
 
     // update the artist list for the city
     const updatedArtists = [...cityOfNewArtist.artists, updatedArtist];
-
     // Update the city object with the new artist
     const updatedUserCity = { ...cityOfNewArtist, artists: updatedArtists };
     const updatedUserCities = user.cities.map((c) =>
@@ -480,31 +475,14 @@ const MyProvider = ({ children }) => {
       g.id === updatedUserGenre.id ? updatedUserGenre : g
     );
 
-    // update user state with the new city and genre data
-    setUser({
-      ...user,
-      cities: updatedUserCities,
-      genres: updatedUserGenres,
-    });
+    setUser((prevUser) => ({
+      ...prevUser, // Preserve all the existing user state
+      cities: updatedUserCities, // Update the cities with the new artist
+      genres: updatedUserGenres, // Update the genres with the new artist
+    }));
 
     // **Update the selected artist state**
     setSelectedArtist(updatedArtist);
-
-    // // check if the genre already exists using filter
-    // const genreExists =
-    //   user.genres.filter((genre) => genre.id === newArtist.genre_id).length ===
-    //   0;
-    // if (genreExists) {
-    //   const artistGenre = genres.find(
-    //     (genre) => genre.id === newArtist.genre_id
-    //   );
-    //   user.genres = [...user.genres, artistGenre];
-    // }
-
-    // // add the new artist to the artists array
-    // user.artists = [...user.artists, newArtist];
-
-    // setUser(user);
   };
 
   return (
@@ -531,6 +509,7 @@ const MyProvider = ({ children }) => {
         setIsAuthenticated,
         updateArtist,
         deleteArtist,
+        logoutUser,
       }}
     >
       {children}

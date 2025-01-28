@@ -26,26 +26,26 @@ function UserProfile() {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleLogout = () => {
-    fetch("/logout", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include", // include credentials for session cookies
-    })
-      .then((response) => {
-        if (response.ok) {
-          setUser(null); // Clear user data in context
-          setIsAuthenticated(false); // Update the authentication state
-          navigate("/login"); // Redirect to login page
-        }
-      })
-      .catch((err) => {
-        console.error("Logout failed:", err);
-        alert("An error occurred during logout.");
-      });
-  };
+  // const handleLogout = () => {
+  //   fetch("/logout", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     credentials: "include", // include credentials for session cookies
+  //   })
+  //     .then((response) => {
+  //       if (response.ok) {
+  //         setUser(null); // Clear user data in context
+  //         setIsAuthenticated(false); // Update the authentication state
+  //         navigate("/login"); // Redirect to login page
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.error("Logout failed:", err);
+  //       alert("An error occurred during logout.");
+  //     });
+  // };
 
   const toggleCreateForm = () => {
     setShowCreateForm((prev) => !prev);
@@ -100,7 +100,7 @@ function UserProfile() {
             {viewGenres ? "Hide Genres" : "View Genres"}
           </button>
 
-          <button onClick={handleLogout}>Logout</button>
+          {/* <button onClick={handleLogout}>Logout</button> */}
         </div>
         <hr />
         <br />

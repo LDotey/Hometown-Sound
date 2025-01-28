@@ -90,7 +90,12 @@ function ArtistCard({ artist }) {
         {isEditing ? "Cancel" : "Edit this Artist"}
       </button>
       <br />
-      <button onClick={handleDeleteClick}>Delete This Artist</button>
+      {isEditing ? (
+        ""
+      ) : (
+        <button onClick={handleDeleteClick}>Delete This Artist</button>
+      )}
+      {/* <button onClick={handleDeleteClick}>Delete This Artist</button> */}
       {isEditing && (
         <button type="submit" onClick={formik.handleSubmit}>
           Submit changes

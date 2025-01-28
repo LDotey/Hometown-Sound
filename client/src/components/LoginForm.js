@@ -52,7 +52,7 @@ function CreateLogin() {
   });
 
   return (
-    <div>
+    <div className="login-container">
       <form onSubmit={formik.handleSubmit}>
         <label htmlFor="username">Username:</label>
         <br />

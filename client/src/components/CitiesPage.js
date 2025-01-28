@@ -15,7 +15,7 @@ function AllCities() {
   return (
     <div>
       <h1>All Cities</h1>
-      <button onClick={toggleCreateForm}>
+      <button className="add-button" onClick={toggleCreateForm}>
         {showCreateForm ? "Cancel" : "Add New City"}
       </button>
 
