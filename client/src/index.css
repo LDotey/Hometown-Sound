@@ -1,9 +1,6 @@
-/* :root {
-  --bg: #282c34;
-  --header: #fff;
-  --link: #61dafb;
-  --text: hsla(0, 0%, 100%, 0.88);
-} */
+:root {
+  font-family: Arial, Helvetica, sans-serif;
+}
 
 /* NavBar styling */
 .navbar {
@@ -33,6 +30,22 @@
 
 .navbar a.active {
   background-color: #ff6347; /* Highlight the active link with a different color */
+}
+
+.login-container {
+  display: flex;
+  justify-content: flex-end; /* Aligns the form to the right side */
+  align-items: top; /* Vertically centers the form */
+  height: 100vh; /* Takes full viewport height */
+  padding: 130px; /* Add buffer (spacing) around the form */
+}
+
+.signup-container {
+  display: flex;
+  justify-content: left; /* Aligns the form to the right side */
+  align-items: top; /* Vertically centers the form */
+  height: 100vh; /* Takes full viewport height */
+  padding: 130px;
 }
 
 /* Styling for the UserProfile container */

@@ -55,7 +55,7 @@ function SignUp() {
   });
 
   return (
-    <div>
+    <div className="signup-container">
       <form onSubmit={formik.handleSubmit}>
         <label htmlFor="username">Username:</label>
         <br />
