@@ -28,6 +28,7 @@ function UserCities() {
       setSelectedCity(null);
     };
   }, []);
+
   const handleCityClick = async (city) => {
     if (!city || !city.id) {
       console.error("city obj or city.id is undefined");
@@ -51,14 +52,14 @@ function UserCities() {
       return;
     }
 
-    // Check the artists array before filtering
-    console.log("All artists in selected city:", selectedCityData.artists);
-    // Log the `city_id` and `user_id` of each artist
-    selectedCityData.artists.forEach((artist) => {
-      console.log(
-        `Artist ID: ${artist.id}, City ID: ${artist.city_id}, User ID: ${artist.user_id}`
-      );
-    });
+    // // Check the artists array before filtering
+    // console.log("All artists in selected city:", selectedCityData.artists);
+    // // Log the `city_id` and `user_id` of each artist
+    // selectedCityData.artists.forEach((artist) => {
+    //   console.log(
+    //     `Artist ID: ${artist.id}, City ID: ${artist.city_id}, User ID: ${artist.user_id}`
+    //   );
+    // });
 
     // Filter artists for this city and make sure to include only those belonging to the logged-in user
     // const cityArtists = selectedCityData.artists.filter(
@@ -112,17 +113,44 @@ function UserCities() {
     // update  state when an artist is clicked
     setSelectedArtist(artist);
   };
-  // Effect hook to ensure the artists list is cleared when the selected city has no artists
+  // // Effect hook to ensure the artists list is cleared when the selected city has no artists
+  // useEffect(() => {
+  //   // If no artists in the selected city, reset the artist list and clear selected artist
+  //   if (selectedCity) {
+  //     const city = user.cities.find((c) => c.id === selectedCity);
+  //     if (city && (!city.artists || city.artists.length === 0)) {
+  //       setArtists([]); // Clear the artists list
+  //       setSelectedArtist(null); // Clear selected artist as well
+  //     }
+  //   }
+  // }, [selectedCity, user.cities, setArtists, setSelectedArtist]);
+
+  // useEffect(() => {
+  //   if (selectedCity) {
+  //     const city = user.cities.find((c) => c.id === selectedCity);
+  //     if (city && city.artists && city.artists.length > 0) {
+  //       setArtists(city.artists); // Set the artists when city is selected
+  //     } else {
+  //       setArtists([]); // Clear artists if no artists are available
+  //     }
+  //   }
+  // }, [selectedCity, user.cities, setArtists]);
+
   useEffect(() => {
-    // If no artists in the selected city, reset the artist list and clear selected artist
     if (selectedCity) {
+      // Find the selected city in the user data
       const city = user.cities.find((c) => c.id === selectedCity);
-      if (city && (!city.artists || city.artists.length === 0)) {
-        setArtists([]); // Clear the artists list
-        setSelectedArtist(null); // Clear selected artist as well
+
+      if (city) {
+        // If the city has artists, update the artists state
+        if (city.artists && city.artists.length > 0) {
+          setArtists(city.artists); // Set the artists for the selected city
+        } else {
+          setArtists([]); // Clear artists if no artists are available
+        }
       }
     }
-  }, [selectedCity, user.cities, setArtists, setSelectedArtist]);
+  }, [selectedCity, user.cities]); // Listen for changes in selectedCity and user.cities
 
   useEffect(() => {
     if (user.cities && selectedCity) {
