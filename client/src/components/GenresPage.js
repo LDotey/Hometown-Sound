@@ -11,7 +11,7 @@ function AllGenres() {
   };
 
   return (
-    <div>
+    <div className="all-genres">
       <h1>All Genres</h1>
       <button className="add-button" onClick={toggleCreateForm}>
         {showCreateForm ? "Cancel" : "Add New Genre"}

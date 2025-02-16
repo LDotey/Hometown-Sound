@@ -5,7 +5,6 @@ import ArtistCard from "./ArtistCard";
 function UserCities() {
   const {
     user,
-    setUser,
     artists,
     setArtists,
     selectedCity,
@@ -67,7 +66,7 @@ function UserCities() {
     // );
     // Filter artists by city and user_id to ensure that only the logged-in user's artists are shown
     const cityArtists = selectedCityData.artists.filter(
-      (artist) => artist.city_id === city.id //&& artist.user_id === user.id
+      (artist) => artist.city_id === city.id && artist.user_id === user.id
     );
     // const cityArtists = selectedCityData.artists.filter(
     //   (artist) => artist.city_id === city.id

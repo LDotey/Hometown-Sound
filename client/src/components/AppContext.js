@@ -145,201 +145,6 @@ const MyProvider = ({ children }) => {
       .catch((error) => console.error("Error updating artist:", error));
   };
 
-  // *****************************************
-  // const updateArtist = (artist, updatedArtistData) => {
-  //   let updatedArtist;
-
-  //   fetch(`/artists/${artist.id}`, {
-  //     method: "PATCH",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(updatedArtistData),
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       updatedArtist = data;
-  //       // debugger;
-  //       console.log("Updated artist:", updatedArtist);
-
-  //       let adjUser = { ...user };
-
-  //       // Step 1: handle city change
-  //       if (artist.city_id !== updatedArtistData.city_id) {
-  //         let cityToUpdate = adjUser.cities.find(
-  //           (c) => c.id === updatedArtistData.city_id
-  //         );
-
-  //         if (!cityToUpdate) {
-  //           cityToUpdate = {
-  //             id: updatedArtistData.city_id,
-  //             name: updatedArtistData.city.name,
-  //             location: updatedArtistData.city.location,
-  //             artists: [updatedArtist],
-  //           };
-  //           adjUser.cities = [...adjUser.cities, cityToUpdate]; // **CHANGED**: Used spread to ensure immutability
-  //         } else {
-  //           // Update the city with the new artist data
-  //           cityToUpdate = {
-  //             ...cityToUpdate,
-  //             artists: cityToUpdate.artists.map((art) =>
-  //               art.id === updatedArtist.id ? updatedArtist : art
-  //             ),
-  //           };
-
-  //           // **CHANGED**: Reassign the updated city array in adjUser
-  //           adjUser.cities = adjUser.cities.map((city) =>
-  //             city.id === cityToUpdate.id ? cityToUpdate : city
-  //           );
-  //         }
-
-  //         // if (!cityToUpdate) {
-  //         //   const city = cities.find((c) => c.id === updatedArtistData.city_id);
-  //         //   cityToUpdate = { ...city, artists: [updatedArtist] };
-  //         //   adjUser.cities.push(cityToUpdate); // *** add the new city ***
-  //         // } else {
-  //         //   const updatedArtistsList = cityToUpdate.artists.map((artist) =>
-  //         //     artist.id === updatedArtist.id ? updatedArtist : artist
-  //         //   );
-  //         //   cityToUpdate = { ...cityToUpdate, artists: updatedArtistsList };
-  //         // }
-  //         // ***********************
-
-  //         //   const originalCity = user.cities.find((c) => c.id === artist.city_id);
-  //         //   if (originalCity) {
-  //         //     originalCity.artists = originalCity.artists.filter(
-  //         //       (art) => art.id !== updatedArtist.id
-  //         //     );
-  //         //   }
-  //         // }
-
-  //         const originalCity = adjUser.cities.find(
-  //           (c) => c.id === artist.city_id
-  //         );
-  //         if (originalCity) {
-  //           const updatedOriginalCity = {
-  //             ...originalCity,
-  //             artists: originalCity.artists.filter(
-  //               (art) => art.id !== updatedArtist.id
-  //             ),
-  //           };
-
-  //           // **CHANGED**: If the original city is empty after editing, remove it
-  //           if (updatedOriginalCity.artists.length === 0) {
-  //             adjUser.cities = adjUser.cities.filter(
-  //               (city) => city.id !== updatedOriginalCity.id
-  //             );
-  //           } else {
-  //             // **CHANGED**: Otherwise, update the city with the modified artist list
-  //             adjUser.cities = adjUser.cities.map((city) =>
-  //               city.id === updatedOriginalCity.id ? updatedOriginalCity : city
-  //             );
-  //           }
-  //         }
-  //       }
-  //       // ***********************************
-
-  //       // ***********************************
-  //       if (artist.genre_id !== updatedArtistData.genre_id) {
-  //         let genreToUpdate = adjUser.genres.find(
-  //           (g) => g.id === updatedArtistData.genre_id
-  //         );
-  //         if (!genreToUpdate) {
-  //           // Create the genre if it doesn't exist for this user
-  //           genreToUpdate = {
-  //             id: updatedArtistData.genre_id,
-  //             name: updatedArtistData.genre.name,
-  //             color: generateRandomColor(),
-  //             artists: [updatedArtist],
-  //           };
-  //           adjUser.genres = [...adjUser.genres, genreToUpdate]; // **CHANGED**: Used spread to ensure immutability
-  //         } else {
-  //           // Update the genre with the new artist data
-  //           genreToUpdate = {
-  //             ...genreToUpdate,
-  //             artists: genreToUpdate.artists.map((art) =>
-  //               art.id === updatedArtist.id ? updatedArtist : art
-  //             ),
-  //           };
-  //           // **CHANGED**: Reassign the updated genre array in adjUser
-  //           adjUser.genres = adjUser.genres.map((genre) =>
-  //             genre.id === genreToUpdate.id ? genreToUpdate : genre
-  //           );
-  //         }
-
-  //         // Remove artist from the old genre if genre is changed
-  //         // const originalGenre = user.genres.find(
-  //         //   (g) => g.id === artist.genre_id
-  //         // );
-  //         // if (originalGenre) {
-  //         //   originalGenre.artists = originalGenre.artists.filter(
-  //         //     (art) => art.id !== updatedArtist.id
-  //         //   );
-  //         // }
-
-  //         // if (!genreToUpdate) {
-  //         //   const genre = genres.fins(
-  //         //     (g) => g.id === updatedArtistData.genre_id
-  //         //   );
-  //         //   genreToUpdate = { ...genre, artists: [updatedArtist] };
-  //         //   adjUser.genres.push(genreToUpdate); // *** add the new genre **
-  //         // } else {
-  //         //   const updatedArtistsList = genreToUpdate.artists.map((artist) =>
-  //         //     artist.id === updatedArtist.id ? updatedArtist : artist
-  //         //   );
-
-  //         //   genreToUpdate = { ...genreToUpdate, artists: updatedArtistsList };
-  //         // }
-
-  //         const originalGenre = adjUser.genres.find(
-  //           (g) => g.id === artist.genre_id
-  //         );
-  //         if (originalGenre) {
-  //           const updatedOriginalGenre = {
-  //             ...originalGenre,
-  //             artists: originalGenre.artists.filter(
-  //               (artist) => artist.id !== updatedArtist.id
-  //             ),
-  //           };
-
-  //           // **CHANGED**: If the original genre is empty after editing, remove it
-  //           if (updatedOriginalGenre.artists.length === 0) {
-  //             adjUser.genres = adjUser.genres.filter(
-  //               (genre) => genre.id !== updatedOriginalGenre.id
-  //             );
-  //           } else {
-  //             // **CHANGED**: Otherwise, update the genre with the modified artist list
-  //             adjUser.genres = adjUser.genres.map((genre) =>
-  //               genre.id === updatedOriginalGenre.id
-  //                 ? updatedOriginalGenre
-  //                 : genre
-  //             );
-  //           }
-  //         }
-  //       }
-  //       console.log("Current User:", user);
-  //       console.log("Updating Artist:", updatedArtist);
-  //       console.log("Updated User:", adjUser);
-
-  //       // Update the user data by fetching the current user's data
-  //       fetch("/current_user") // Re-fetch the current user data
-  //         .then((response) => response.json())
-  //         .then((updatedUserData) => {
-  //           console.log("Updated user data:", updatedUserData);
-  //           setUser(updatedUserData); // Update state with new user data
-  //           setSelectedArtist(updatedArtist); // Update selected artist
-  //         })
-  //         .catch((error) =>
-  //           console.error("Error fetching updated user data:", error)
-  //         );
-  //     })
-  //     .catch((error) => console.error("Error updating artist:", error));
-  // };
-  //       setUser(adjUser);
-
-  //       setSelectedArtist(updatedArtist);
-  //     });
-  // };
   const deleteArtist = (id) => {
     fetch(`/artists/${id}`, {
       method: "DELETE",
@@ -354,7 +159,13 @@ const MyProvider = ({ children }) => {
         console.log("deleted artist response:", data);
 
         if (data.message === "Artist deleted successfully") {
-          // update users' artists
+          // Assuming `artists` is an array in the state, let's filter it out
+          const updatedArtists = artists.filter((artist) => artist.id !== id);
+
+          // Now update the state for artists
+          setArtists(updatedArtists); // This should trigger a re-render for the artist list
+
+          // Additional logic to clean up users, cities, genres (keeping this)
           const updatedUsers = users.map((user) => {
             if (user.id === data.user_id) {
               user.artists = user.artists.filter((artist) => artist.id !== id);
@@ -362,51 +173,39 @@ const MyProvider = ({ children }) => {
             return user;
           });
 
-          // update cities
           const updatedCities = user.cities
             .map((city) => {
               city.artists = city.artists.filter((artist) => artist.id !== id);
 
-              // remove city if there are no artists left
               if (city.artists.length === 0) {
-                return null; // this marks city for removal
+                return null; // marks city for removal
               }
 
-              return city; // Keep city if there are  artists
+              return city;
             })
-            .filter((city) => city !== null); // filter out  cities marked for removal
+            .filter((city) => city !== null);
 
-          //update genres
           const updatedGenres = user.genres
             .map((genre) => {
               genre.artists = genre.artists.filter(
                 (artist) => artist.id !== id
               );
 
-              //remove genre if there are no artists left
               if (genre.artists.length === 0) {
-                return null; // mark  for removal
+                return null; // marks genre for removal
               }
 
-              return genre; // keep genre if there are  artists
+              return genre;
             })
             .filter((genre) => genre !== null);
 
-          // update the users state with the cleaned-up data
+          // Update the global users and cities/genres state
           setUsers(updatedUsers);
-
-          // update the cities and genres for the user
           setUser({
             ...user,
             cities: updatedCities,
             genres: updatedGenres,
           });
-
-          // update the artists state
-          const updatedArtists = artists.filter((artist) => artist.id !== id);
-          setArtists(updatedArtists);
-
-          console.log("Updated user data after artist deletion:", user);
         } else {
           console.error("Failed to delete artist:", data);
         }
@@ -416,13 +215,90 @@ const MyProvider = ({ children }) => {
       });
   };
 
+  // const deleteArtist = (id) => {
+  //   fetch(`/artists/${id}`, {
+  //     method: "DELETE",
+  //   })
+  //     .then((response) => {
+  //       if (!response.ok) {
+  //         throw new Error("Failed to delete artist");
+  //       }
+  //       return response.json();
+  //     })
+  //     .then((data) => {
+  //       console.log("deleted artist response:", data);
+
+  //       if (data.message === "Artist deleted successfully") {
+  //         // update users' artists
+  //         const updatedUsers = users.map((user) => {
+  //           if (user.id === data.user_id) {
+  //             user.artists = user.artists.filter((artist) => artist.id !== id);
+  //           }
+  //           return user;
+  //         });
+
+  //         // update cities
+  //         const updatedCities = user.cities
+  //           .map((city) => {
+  //             city.artists = city.artists.filter((artist) => artist.id !== id);
+
+  //             // remove city if there are no artists left
+  //             if (city.artists.length === 0) {
+  //               return null; // this marks city for removal
+  //             }
+
+  //             return city; // Keep city if there are  artists
+  //           })
+  //           .filter((city) => city !== null); // filter out  cities marked for removal
+
+  //         //update genres
+  //         const updatedGenres = user.genres
+  //           .map((genre) => {
+  //             genre.artists = genre.artists.filter(
+  //               (artist) => artist.id !== id
+  //             );
+
+  //             //remove genre if there are no artists left
+  //             if (genre.artists.length === 0) {
+  //               return null; // mark  for removal
+  //             }
+
+  //             return genre; // keep genre if there are  artists
+  //           })
+  //           .filter((genre) => genre !== null);
+
+  //         // update the users state with the cleaned-up data
+  //         setUsers(updatedUsers);
+
+  //         // update the cities and genres for the user
+  //         setUser({
+  //           ...user,
+  //           cities: updatedCities,
+  //           genres: updatedGenres,
+  //         });
+
+  //         // update the artists state
+  //         const updatedArtists = artists.filter((artist) => artist.id !== id);
+  //         setArtists(updatedArtists);
+
+  //         console.log("Updated user data after artist deletion:", user);
+  //       } else {
+  //         console.error("Failed to delete artist:", data);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error deleting artist:", error);
+  //     });
+  // };
+
   const addArtist = (newArtist) => {
-    // get  city using city_id from the user.cities array
+    // Get city using city_id from the user.cities array
     let cityOfNewArtist = user.cities.find((c) => c.id === newArtist.city_id);
+    let updatedCities = [...user.cities]; // Initialize updatedCities as a copy of the current cities array
 
     if (!cityOfNewArtist) {
-      //if doesn't exist, create it using city_id and related data
-      // console.log("Creating new city for artist:", newArtist.city_id);
+      // If it doesn't exist, create it using city_id and related data
+      console.log("Creating new city for artist:", newArtist.city_id);
       cityOfNewArtist = {
         id: newArtist.city_id,
         name: newArtist.city_name,
@@ -430,15 +306,23 @@ const MyProvider = ({ children }) => {
         artists: [],
       };
 
-      // add the new city to the cities array
-      user.cities.push(cityOfNewArtist);
+      // Create a new array for cities that includes the new city
+      updatedCities = [...user.cities, cityOfNewArtist]; // Add the new city to the updated array
+    } else {
+      // If city exists, just update its artists array
+      updatedCities = user.cities.map((city) =>
+        city.id === cityOfNewArtist.id
+          ? { ...city, artists: [...city.artists, newArtist] }
+          : city
+      );
     }
 
-    // get the genre using genre_id from the user.genres array
+    // Get genre using genre_id from the user.genres array
     let genreOfNewArtist = user.genres.find((g) => g.id === newArtist.genre_id);
+    let updatedGenres = [...user.genres]; // Initialize updatedGenres as a copy of the current genres array
 
     if (!genreOfNewArtist) {
-      // if the genre doesn't exist, create it using genre_id and related data
+      // If the genre doesn't exist, create it using genre_id and related data
       console.log("Creating new genre for artist:", newArtist.genre_id);
       genreOfNewArtist = {
         id: newArtist.genre_id,
@@ -447,43 +331,96 @@ const MyProvider = ({ children }) => {
         artists: [],
       };
 
-      // add  new genre to genres array
-      user.genres.push(genreOfNewArtist);
+      // Create a new array for genres that includes the new genre
+      updatedGenres = [...user.genres, genreOfNewArtist]; // Add the new genre to the updated array
+    } else {
+      // If genre exists, just update its artists array
+      updatedGenres = user.genres.map((genre) =>
+        genre.id === genreOfNewArtist.id
+          ? { ...genre, artists: [...genre.artists, newArtist] }
+          : genre
+      );
     }
 
-    //  update the city and genre with the new artist
-    const updatedArtist = {
-      id: newArtist.id,
-      name: newArtist.name,
-      image: newArtist.image,
-      genre: newArtist.genre_name,
-      city_id: newArtist.city_id,
-      genre_id: newArtist.genre_id,
-    };
-
-    // update the artist list for the city
-    const updatedArtists = [...cityOfNewArtist.artists, updatedArtist];
-    // Update the city object with the new artist
-    const updatedUserCity = { ...cityOfNewArtist, artists: updatedArtists };
-    const updatedUserCities = user.cities.map((c) =>
-      c.id === updatedUserCity.id ? updatedUserCity : c
-    );
-
-    // Update the artist list for the genre
-    const updatedUserGenre = { ...genreOfNewArtist, artists: updatedArtists };
-    const updatedUserGenres = user.genres.map((g) =>
-      g.id === updatedUserGenre.id ? updatedUserGenre : g
-    );
-
-    setUser((prevUser) => ({
-      ...prevUser, // Preserve all the existing user state
-      cities: updatedUserCities, // Update the cities with the new artist
-      genres: updatedUserGenres, // Update the genres with the new artist
-    }));
-
     // **Update the selected artist state**
-    setSelectedArtist(updatedArtist);
+    setSelectedArtist(newArtist);
+
+    // Update the user's state with the new cities and genres
+    setUser((prevUser) => ({
+      ...prevUser,
+      cities: updatedCities, // Updated cities with the new artist
+      genres: updatedGenres, // Updated genres with the new artist
+    }));
   };
+
+  // const addArtist = (newArtist) => {
+  //   // get  city using city_id from the user.cities array
+  //   let cityOfNewArtist = user.cities.find((c) => c.id === newArtist.city_id);
+
+  //   if (!cityOfNewArtist) {
+  //     //if doesn't exist, create it using city_id and related data
+  //     // console.log("Creating new city for artist:", newArtist.city_id);
+  //     cityOfNewArtist = {
+  //       id: newArtist.city_id,
+  //       name: newArtist.city_name,
+  //       location: newArtist.city_location,
+  //       artists: [],
+  //     };
+
+  //     // add the new city to the cities array
+  //     user.cities.push(cityOfNewArtist);
+  //   }
+
+  //   // get the genre using genre_id from the user.genres array
+  //   let genreOfNewArtist = user.genres.find((g) => g.id === newArtist.genre_id);
+
+  //   if (!genreOfNewArtist) {
+  //     // if the genre doesn't exist, create it using genre_id and related data
+  //     console.log("Creating new genre for artist:", newArtist.genre_id);
+  //     genreOfNewArtist = {
+  //       id: newArtist.genre_id,
+  //       name: newArtist.genre_name,
+  //       color: generateRandomColor(),
+  //       artists: [],
+  //     };
+
+  //     // add  new genre to genres array
+  //     user.genres.push(genreOfNewArtist);
+  //   }
+
+  //   //  update the city and genre with the new artist
+  //   const updatedArtist = {
+  //     id: newArtist.id,
+  //     name: newArtist.name,
+  //     image: newArtist.image,
+  //     genre: newArtist.genre_name,
+  //     city_id: newArtist.city_id,
+  //     genre_id: newArtist.genre_id,
+  //   };
+
+  //   // update the artist list for the city
+  //   const updatedArtists = [...cityOfNewArtist.artists, updatedArtist];
+  //   // Update the city object with the new artist
+  //   const updatedUserCity = { ...cityOfNewArtist, artists: updatedArtists };
+  //   const updatedUserCities = user.cities.map((c) =>
+  //     c.id === updatedUserCity.id ? updatedUserCity : c
+  //   );
+
+  //   // Update the artist list for the genre
+  //   const updatedUserGenre = { ...genreOfNewArtist, artists: updatedArtists };
+  //   const updatedUserGenres = user.genres.map((g) =>
+  //     g.id === updatedUserGenre.id ? updatedUserGenre : g
+  //   );
+
+  //   setUser((prevUser) => ({
+  //     ...prevUser, // Preserve all the existing user state
+  //     cities: updatedUserCities, // Update the cities with the new artist
+  //     genres: updatedUserGenres, // Update the genres with the new artist
+  //   }));
+
+  //   // **Update the selected artist state**
+  //   setSelectedArtist(updatedArtist);
+  // };
 
   return (
     <MyContext.Provider

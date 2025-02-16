@@ -5,7 +5,7 @@ import { MyContext } from "./AppContext";
 import { useNavigate } from "react-router-dom";
 
 function SignUp() {
-  const { users, setUsers } = useContext(MyContext);
+  const { setUsers } = useContext(MyContext);
   const navigate = useNavigate();
 
   const formSchema = yup.object().shape({

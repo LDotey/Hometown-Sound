@@ -1,11 +1,10 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { MyContext } from "./AppContext";
 
 const CreateArtist = () => {
-  const { cities, genres, user, artists, setArtists, addArtist } =
-    useContext(MyContext);
+  const { cities, genres, user, setArtists, addArtist } = useContext(MyContext);
   const [showSuccess, setShowSuccess] = useState(false);
 
   const formSchema = yup.object().shape({
@@ -52,6 +51,21 @@ const CreateArtist = () => {
     validateOnBlur: true,
     onSubmit: async (values) => {
       console.log("I've been clicked");
+      await formik.validateForm();
+
+      if (!formik.isValid) {
+        console.error("Form is invalid. Check errors above.");
+        return; // Prevent form submission if invalid
+      }
+      formik.setTouched({
+        name: true,
+        image: true,
+        city_id: true,
+        city_name: true,
+        city_location: true,
+        genre_id: true,
+        genre_name: true,
+      });
       // Parse genre_id to an integer before submitting
       const genreId = values.genre_id ? parseInt(values.genre_id, 10) : null;
 

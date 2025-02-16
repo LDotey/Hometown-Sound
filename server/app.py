@@ -106,82 +106,7 @@ class Genres(Resource):
 
         return new_genre.to_dict(), 201
     
-# class Artists(Resource):
-#     def get(self):
-#         artists = [artist.to_dict() for artist in Artist.query.all()]
-#         return artists, 200
-    
-#     def post(self):
-#         data = request.get_json()
-#         # breakpoint()
 
-#         city_name = data.get("city_name")
-#         city_location = data.get("city_location")
-#         city_id = data.get("city_id")
-#         genre_id = data.get("genre_id")
-#         genre_name = data.get("genre_name")
-#         genre_color = data.get("genre_color")
-
-#         # create the artist
-#         new_artist = Artist(
-#             name=data.get("name"),
-#             image=data.get("image"),
-#             user_id=data.get("user_id"),
-#             # city_id=city_id,
-#             # genre_id=genre_id,
-#         )
-
-#         # check if city_id is provided, if not, create a new city
-#         if not city_id and city_name and city_location:
-#             city = City.query.filter_by(name=city_name).first()
-#             if not city:                
-#                 city = City(name=city_name, location=city_location)
-#                 # new_artist.city = city
-#                 # new_artist.city_id = city_id
-#                 # breakpoint()
-#                 db.session.add(city)
-#                 db.session.commit()
-#             city_id = city.id  # use the ID of the new or existing city
-#             new_artist.city_id = city_id
-
-# # Check if genre_id is provided, if not, create a new genre
-#         if genre_id:
-#             genre_id = int(genre_id)  # Ensure genre_id is an integer
-#             print(f"Using existing genre with ID: {genre_id}")
-#         elif genre_name:  # Only create a new genre if genre_name is provided
-#             print(f"Looking for genre: {genre_name}")
-#             genre = Genre.query.filter_by(name=genre_name).first()
-#             if not genre:
-#                 print(f"Creating new genre: {genre_name} with color {genre_color}")
-#                 genre = Genre(name=genre_name, color=genre_color)
-#                 db.session.add(genre)
-#                 db.session.commit()  # Commit to generate an ID for the new genre
-#             genre_id = genre.id  # Set the genre_id for the new artist
-#             print(f"Genre ID assigned: {genre_id}")
-#         # if not genre_id and genre_name:
-#         #     genre = Genre.query.filter_by(name=genre_name).first()
-#         #     if not genre:
-#         #         genre = Genre(name=genre_name, color=genre_color)
-#         #         # new_artist.genre = genre
-#         #         db.session.add(genre)
-#         #         db.session.commit()
-#         #     genre_id = genre.id
-#             new_artist.genre_id = genre_id
-
-        
-#         # # create the artist
-#         # new_artist = Artist(
-#         #     name=data.get("name"),
-#         #     image=data.get("image"),
-#         #     user_id=data.get("user_id"),
-#         #     city_id=city_id,
-#         #     genre_id=genre_id,
-#         # )
-        
-#         db.session.add(new_artist)
-#         db.session.commit()
-
-#         return new_artist.to_dict(), 201
 
 class Artists(Resource):
     def get(self):
@@ -418,45 +343,7 @@ class CurrentUser(Resource):
 
         return user_data, 200
     
-# class CurrentUser(Resource):
-#     @login_required 
 
-#     def get(self):
-#         # if current_user:
-#         #      logout_user()
-#         # logout_user()
-#         # breakpoint()
-#         print("Session data:", session)  
-#         print("Current user:", current_user)  
-#         print("Is authenticated?", current_user.is_authenticated)  
-
-#         if current_user.is_authenticated:
-#             user = {
-#                 id: current_user.id,
-#                 username: current_user.username,
-#                 _password_hash: current_user._password_hash
-#                 cities: []
-#             }
-
-#             # user = deepcopy(current_user)
-#             # adjArtists = []
-#             # cities = deepcopy(user.cities)
-#             for cit in current_user.cities:
-#                 append each cit in to fakeUser.cities
-#                 # artists = cit.artists
-#                 for art in cit.artists:
-#                 # breakpoint()
-#                     # if art.user_id == current_user.id:
-#                         # adjArtists.append(art)
-#                 adjArtists = [art for art in cit.artists if art.user_id == user.id]
-#                 # breakpoint()
-#                 cit.artists = adjArtists
-#             breakpoint()
-#             user_dict = user.to_dict()  
-#             return user_dict, 200
-#         else:
-#             return {'message': 'User not authenticated'}, 401
-        
         
 class CheckSession(Resource):
     def get(self):
@@ -550,3 +437,120 @@ if __name__ == '__main__':
 # (for example, if it's wrapped in an additional object), 
 # your frontend will need to adjust accordingly.
 
+
+# class Artists(Resource):
+#     def get(self):
+#         artists = [artist.to_dict() for artist in Artist.query.all()]
+#         return artists, 200
+    
+#     def post(self):
+#         data = request.get_json()
+#         # breakpoint()
+
+#         city_name = data.get("city_name")
+#         city_location = data.get("city_location")
+#         city_id = data.get("city_id")
+#         genre_id = data.get("genre_id")
+#         genre_name = data.get("genre_name")
+#         genre_color = data.get("genre_color")
+
+#         # create the artist
+#         new_artist = Artist(
+#             name=data.get("name"),
+#             image=data.get("image"),
+#             user_id=data.get("user_id"),
+#             # city_id=city_id,
+#             # genre_id=genre_id,
+#         )
+
+#         # check if city_id is provided, if not, create a new city
+#         if not city_id and city_name and city_location:
+#             city = City.query.filter_by(name=city_name).first()
+#             if not city:                
+#                 city = City(name=city_name, location=city_location)
+#                 # new_artist.city = city
+#                 # new_artist.city_id = city_id
+#                 # breakpoint()
+#                 db.session.add(city)
+#                 db.session.commit()
+#             city_id = city.id  # use the ID of the new or existing city
+#             new_artist.city_id = city_id
+
+# # Check if genre_id is provided, if not, create a new genre
+#         if genre_id:
+#             genre_id = int(genre_id)  # Ensure genre_id is an integer
+#             print(f"Using existing genre with ID: {genre_id}")
+#         elif genre_name:  # Only create a new genre if genre_name is provided
+#             print(f"Looking for genre: {genre_name}")
+#             genre = Genre.query.filter_by(name=genre_name).first()
+#             if not genre:
+#                 print(f"Creating new genre: {genre_name} with color {genre_color}")
+#                 genre = Genre(name=genre_name, color=genre_color)
+#                 db.session.add(genre)
+#                 db.session.commit()  # Commit to generate an ID for the new genre
+#             genre_id = genre.id  # Set the genre_id for the new artist
+#             print(f"Genre ID assigned: {genre_id}")
+#         # if not genre_id and genre_name:
+#         #     genre = Genre.query.filter_by(name=genre_name).first()
+#         #     if not genre:
+#         #         genre = Genre(name=genre_name, color=genre_color)
+#         #         # new_artist.genre = genre
+#         #         db.session.add(genre)
+#         #         db.session.commit()
+#         #     genre_id = genre.id
+#             new_artist.genre_id = genre_id
+
+        
+#         # # create the artist
+#         # new_artist = Artist(
+#         #     name=data.get("name"),
+#         #     image=data.get("image"),
+#         #     user_id=data.get("user_id"),
+#         #     city_id=city_id,
+#         #     genre_id=genre_id,
+#         # )
+        
+#         db.session.add(new_artist)
+#         db.session.commit()
+
+#         return new_artist.to_dict(), 201
+
+# class CurrentUser(Resource):
+#     @login_required 
+
+#     def get(self):
+#         # if current_user:
+#         #      logout_user()
+#         # logout_user()
+#         # breakpoint()
+#         print("Session data:", session)  
+#         print("Current user:", current_user)  
+#         print("Is authenticated?", current_user.is_authenticated)  
+
+#         if current_user.is_authenticated:
+#             user = {
+#                 id: current_user.id,
+#                 username: current_user.username,
+#                 _password_hash: current_user._password_hash
+#                 cities: []
+#             }
+
+#             # user = deepcopy(current_user)
+#             # adjArtists = []
+#             # cities = deepcopy(user.cities)
+#             for cit in current_user.cities:
+#                 append each cit in to fakeUser.cities
+#                 # artists = cit.artists
+#                 for art in cit.artists:
+#                 # breakpoint()
+#                     # if art.user_id == current_user.id:
+#                         # adjArtists.append(art)
+#                 adjArtists = [art for art in cit.artists if art.user_id == user.id]
+#                 # breakpoint()
+#                 cit.artists = adjArtists
+#             breakpoint()
+#             user_dict = user.to_dict()  
+#             return user_dict, 200
+#         else:
+#             return {'message': 'User not authenticated'}, 401
+        

@@ -8,7 +8,7 @@ function App() {
   return (
     <div>
       <MyProvider>
-        <h1>Hometown Sound</h1>
+        <h1 className="app-title">Hometown Sound</h1>
         <NavBar />
         <Outlet />
       </MyProvider>

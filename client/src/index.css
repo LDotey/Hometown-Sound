@@ -1,6 +1,22 @@
 :root {
   font-family: Arial, Helvetica, sans-serif;
 }
+body {
+  background-color: #e0f7fa; /* Light aqua background */
+  margin: 0; /* Remove any default margins */
+  padding: 0; /* Remove any default padding */
+}
+
+/* Optionally, apply background color to the app container div */
+/* .app-container {
+  background-color: #e0f7fa; /* Light aqua background */
+/* min-height: 100vh; Ensure the background fills the whole screen */
+/* } */
+.app-title {
+  display: flex;
+  justify-content: center;
+  font-stretch: extra-expanded;
+}
 
 /* NavBar styling */
 .navbar {
@@ -147,6 +163,7 @@
 .cities-list {
   flex: 1; /* This will take up the remaining space */
   padding-right: 20px;
+  /* margin-top: 50px; */
 }
 
 .cities-list ul {
@@ -172,6 +189,7 @@
 
 /* artist-card container */
 .artist-card {
+  background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 20px;
@@ -196,5 +214,19 @@
   margin: 5px 0; /* Padding between the lines */
   text-align: center;
 }
+.all-genres {
+  margin-left: 50px;
+  margin-top: 50px;
+}
 
+.all-cities {
+  margin-left: 50px;
+  margin-top: 50px;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+}
 /* ****************************** */

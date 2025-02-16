@@ -13,7 +13,11 @@ from models import db, User, City, Genre, Artist
 
 users_data = [
     {"username": "JoJo Chintoh", "_password_hash": "citytv416"},
-    {"username": "Jeannie Becker", "_password_hash": "fashion123"}
+    {"username": "Jeannie Becker", "_password_hash": "fashion123"},
+    {"username": "Jessica Kate", "_password_hash": "jupiter"},
+    {"username": "Vincent Moreno", "_password_hash": "christophe"}
+
+
 ]
 
 cities_data = [
@@ -45,7 +49,7 @@ artists_data = [
     {"name": "Biggie Smalls", "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6RjomlgKTIfCgDCjYx4A6HKKiw4fobJ5Mhw&s", "user_id":2, "city_id":1, "genre_id":3},
     {"name": "Black Francis", "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQev7XbfKu3UqQIrSLt17RqQp_1sexLZDQ7yFoL5k3f80g3eBAf", "user_id":2, "city_id":2, "genre_id":1},
     {"name": "The B-52's", "image": "https://bunny-wp-pullzone-cjamrcljf0.b-cdn.net/wp-content/uploads/2021/02/the-b-52_s_001-1024x1012.jpg", "user_id":2, "city_id":3, "genre_id":2},
-    # {"name": "image": "user_id": "city_id": "genre_id":},
+    # {"name": "image":"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Iggy_Pop_-_pinkpop87.jpg/220px-Iggy_Pop_-_pinkpop87.jpg" "user_id": "city_id": "genre_id":},
     # {"name": "image": "user_id": "city_id": "genre_id":},
     # {"name": "image": "user_id": "city_id": "genre_id":},
     # {"name": "image": "user_id": "city_id": "genre_id":},

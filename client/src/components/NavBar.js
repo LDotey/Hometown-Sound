@@ -1,13 +1,9 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { MyContext } from "./AppContext";
 
 function NavBar() {
   const { isAuthenticated, logoutUser } = useContext(MyContext);
-
-  // useEffect(() => {
-  //   console.log("authenticating!!", isAuthenticated);
-  // }, [isAuthenticated]);
 
   return (
     <nav className="navbar">

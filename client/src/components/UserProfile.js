@@ -7,8 +7,7 @@ import UserGenres from "./UserGenres";
 // import "./UserProfile.css";
 
 function UserProfile() {
-  const { user, setUser, setArtists, isAuthenticated, setIsAuthenticated } =
-    useContext(MyContext);
+  const { user, setArtists, isAuthenticated } = useContext(MyContext);
   const [viewCities, setViewCities] = useState(false);
   const [viewGenres, setViewGenres] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -48,25 +47,36 @@ function UserProfile() {
   // };
 
   const toggleCreateForm = () => {
-    setShowCreateForm((prev) => !prev);
+    setShowCreateForm((prev) => {
+      // Close any other views when CreateArtist form is toggled
+      if (!prev) {
+        setViewCities(false);
+        setViewGenres(false);
+      }
+      return !prev;
+    });
   };
 
   const toggleViewCities = () => {
     console.log("Toggling View Cities");
     setViewCities((prev) => {
-      console.log("Previous viewCities:", prev);
-      return !prev; // Toggle the viewCities state
+      if (!prev) {
+        setShowCreateForm(false); // close artist form
+        setViewGenres(false); // close genres view
+      }
+      return !prev;
     });
-    setViewGenres(false); // Hide genres when switching to cities
   };
 
   const toggleViewGenres = () => {
     console.log("Toggling View Genres");
     setViewGenres((prev) => {
-      console.log("Previous viewGenres:", prev);
-      return !prev; // Toggle the viewGenres state
+      if (!prev) {
+        setShowCreateForm(false); // close artist form
+        setViewCities(false); // close cities view
+      }
+      return !prev;
     });
-    setViewCities(false); // Hide cities when switching to genres
   };
 
   useEffect(() => {

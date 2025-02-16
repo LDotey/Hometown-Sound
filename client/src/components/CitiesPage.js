@@ -1,19 +1,17 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { MyContext } from "./AppContext";
-import { useNavigate } from "react-router-dom";
 import CreateCity from "./NewCityForm";
 
 function AllCities() {
   const { cities } = useContext(MyContext);
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const navigate = useNavigate();
 
   const toggleCreateForm = () => {
     setShowCreateForm((prev) => !prev);
   };
 
   return (
-    <div>
+    <div className="all-cities">
       <h1>All Cities</h1>
       <button className="add-button" onClick={toggleCreateForm}>
         {showCreateForm ? "Cancel" : "Add New City"}
